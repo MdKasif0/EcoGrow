@@ -1,0 +1,189 @@
+/* EcoGrow FullCalendar Custom Theme - Dark */
+
+/* Define dark theme colors (adjust these to match your specific brand dark theme) */
+:root {
+  --ecogrow-primary-dark: #4ade80; /* Example: Tailwind green-400 */
+  --ecogrow-accent-dark: #bae6fd;  /* Example: Tailwind sky-200 */
+  --ecogrow-bg-dark: #1f2937; /* Example: Tailwind gray-800 */
+  --ecogrow-surface-dark: #374151; /* Example: Tailwind gray-700 */
+  --ecogrow-text-dark: #f3f4f6; /* Example: Tailwind gray-100 */
+  --ecogrow-text-muted-dark: #9ca3af; /* Example: Tailwind gray-400 */
+  --ecogrow-border-dark: #4b5563; /* Example: Tailwind gray-600 */
+
+  /* Event colors (adjust these based on task type if needed) */
+  --ecogrow-event-water: #60a5fa;     /* Blue */
+  --ecogrow-event-fertilize: #34d399; /* Emerald */
+  --ecogrow-event-harvest: #facc15;   /* Yellow */
+  --ecogrow-event-prune: #a78bfa;     /* Violet */
+  --ecogrow-event-pest: #f87171;      /* Red */
+  --ecogrow-event-other: #9ca3af;    /* Gray */
+}
+
+.ecogrowCalendarRoot {
+  font-family: 'Inter', sans-serif;
+  color: var(--ecogrow-text-dark);
+  background: var(--ecogrow-surface-dark);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Calendar header */
+.fc .fc-toolbar-title {
+  color: var(--ecogrow-primary-dark);
+  font-family: 'Playfair Display', serif; /* Match app title font */
+  font-weight: 700;
+  font-size: 1.875rem; /* text-3xl */
+}
+
+.fc .fc-button {
+  background: var(--ecogrow-surface-dark);
+  border: 1px solid var(--ecogrow-border-dark);
+  color: var(--ecogrow-primary-dark);
+  border-radius: 0.5rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.fc .fc-button:hover, .fc .fc-button:focus {
+  background: var(--ecogrow-border-dark);
+  border-color: var(--ecogrow-primary-dark);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active, 
+.fc .fc-button-primary:not(:disabled):active {
+  background: var(--ecogrow-primary-dark);
+  color: var(--ecogrow-bg-dark);
+  border-color: var(--ecogrow-primary-dark);
+}
+
+/* Calendar grid */
+.fc .fc-daygrid-day {
+  background: var(--ecogrow-surface-dark);
+  border: 1px solid var(--ecogrow-border-dark);
+  border-radius: 0.5rem;
+  transition: background 0.2s ease-in-out;
+}
+
+.fc .fc-daygrid-day-number {
+  color: var(--ecogrow-text-dark);
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background: var(--ecogrow-primary-dark);
+  color: var(--ecogrow-bg-dark);
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: var(--ecogrow-bg-dark);
+  font-weight: 700;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: var(--ecogrow-border-dark);
+}
+
+.fc .fc-daygrid-event {
+  margin: 1px 0;
+}
+
+/* Event chips */
+/* Styling handled in component for better dynamic colors */
+.fc .fc-event {
+  border: none !important; /* Override default FullCalendar border */
+  background: none !important; /* Override default FullCalendar background */
+}
+
+/* Hide default event dot */
+.fc .fc-daygrid-event-dot {
+  display: none;
+}
+
+/* Weekday headers */
+.fc .fc-col-header-cell {
+  background: var(--ecogrow-surface-dark);
+  border: 1px solid var(--ecogrow-border-dark);
+  border-bottom: none;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: var(--ecogrow-text-muted-dark);
+  font-weight: 600;
+  padding: 0.75rem 0;
+}
+
+/* Time grid views */
+.fc .fc-timegrid-slot {
+  border-bottom: 1px dashed var(--ecogrow-border-dark);
+}
+
+.fc .fc-timegrid-slot-label {
+  color: var(--ecogrow-text-muted-dark);
+  font-size: 0.875rem; /* text-sm */
+}
+
+.fc .fc-timegrid-col {
+  border-left: 1px solid var(--ecogrow-border-dark);
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .ecogrowCalendarRoot {
+    padding: 1rem;
+  }
+
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.5rem; /* text-2xl */
+    text-align: center;
+  }
+
+  .fc .fc-button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .fc .fc-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .fc .fc-daygrid-day-number {
+    padding: 0.25rem;
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  .fc .fc-event {
+    font-size: 0.875em;
+  }
+}
+
+@media (max-width: 480px) {
+  .ecogrowCalendarRoot {
+    padding: 0.75rem;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 1.25rem; /* text-xl */
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 0.75rem; /* text-xs */
+  }
+
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  .fc .fc-event {
+    padding: 1px 6px;
+    font-size: 0.8em;
+  }
+} 
