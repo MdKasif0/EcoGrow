@@ -8,9 +8,10 @@ import DesktopSidebar from '@/components/layout/DesktopSidebar';
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { PWAInstallProvider } from '@/context/PWAInstallContext';
-import Preloader from '@/components/layout/Preloader'; // Added Preloader import
+import Preloader from '@/components/layout/Preloader';
 import ActiveUserModeDisplay from '@/components/layout/ActiveUserModeDisplay';
 import { ToastProvider } from '@/components/ui/toast-provider';
+import { StructuredData, webAppData, websiteData, organizationData } from '@/components/SEO/StructuredData';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,39 +27,58 @@ const roboto_mono = Roboto_Mono({
 const siteBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ecogrow.netlify.app/'), // Updated URL
+  metadataBase: new URL('https://eco-grow.netlify.app'),
   title: {
-    default: 'EcoGrow',
-    template: '%s - EcoGrow',
+    default: 'EcoGrow - Smart Plant Growth Management Platform',
+    template: '%s | EcoGrow'
   },
-  description: 'EcoGrow: Your AI-powered gardening companion and plant encyclopedia.', // Update description
-  keywords: ['gardening', 'plants', 'AI', 'grow guide', 'plant care', 'horticulture', 'agriculture'],
-  manifest: '/manifest.webmanifest',
+  description: 'Track, manage, and optimize your plant growth journey with EcoGrow. From seed to harvest, get intelligent insights and tools for successful cultivation.',
+  keywords: ['plant growth', 'garden management', 'plant tracking', 'growing guide', 'plant journal', 'garden calendar', 'plant care', 'harvest tracking'],
+  authors: [{ name: 'EcoGrow Team' }],
+  creator: 'EcoGrow',
+  publisher: 'EcoGrow',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: 'EcoGrow', // Update Open Graph title
-    description: 'EcoGrow: Your AI-powered gardening companion and plant encyclopedia.', // Update Open Graph description
-    url: 'https://ecogrow.netlify.app/', // Updated URL
-    siteName: 'EcoGrow', // Update Open Graph site name
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://eco-grow.netlify.app',
+    title: 'EcoGrow - Smart Plant Growth Management Platform',
+    description: 'Track, manage, and optimize your plant growth journey with EcoGrow. From seed to harvest, get intelligent insights and tools for successful cultivation.',
+    siteName: 'EcoGrow',
     images: [
       {
-        url: '/og-image.png', // Update if you have a new OG image for EcoGrow
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'EcoGrow - AI-powered Gardening Guide', // Update alt text
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
+        alt: 'EcoGrow Platform Preview'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EcoGrow', // Update Twitter title
-    description: 'EcoGrow: Your AI-powered gardening companion and plant encyclopedia.', // Update Twitter description
-    images: ['/og-image.png'], // Update if you have a new Twitter image for EcoGrow
+    title: 'EcoGrow - Smart Plant Growth Management Platform',
+    description: 'Track, manage, and optimize your plant growth journey with EcoGrow. From seed to harvest, get intelligent insights and tools for successful cultivation.',
+    images: ['/og-image.jpg'],
+    creator: '@ecogrow',
   },
-  authors: [{ name: 'Your Name or Team', url: 'yourwebsite.com' }], // Update author details
-  creator: 'Your Name or Team', // Update creator details
-  publisher: 'Your Name or Team', // Update publisher details
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-site-verification', // Add your Google Search Console verification code
+  },
 };
 
 export const viewport: Viewport = {
@@ -75,9 +95,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#ffffff" />
+        <StructuredData type="WebApplication" data={webAppData} />
+        <StructuredData type="WebSite" data={websiteData} />
+        <StructuredData type="Organization" data={organizationData} />
+      </head>
       <body className={`${inter.variable} ${roboto_mono.variable} font-sans antialiased`}>
         <ToastProvider>
-          <Preloader videoSrc="/videos/EcoGrow-preloader-screen.mp4"> {/* Updated Preloader video path */}
+          <Preloader videoSrc="/videos/EcoGrow-preloader-screen.mp4">
             <PWAInstallProvider>
               <ThemeProvider
                   attribute="class"
@@ -96,7 +125,7 @@ export default function RootLayout({
                     </SidebarInset>
                   </div>
                   <MobileBottomNav />
-                  <ActiveUserModeDisplay /> {/* Display active mode */}
+                  <ActiveUserModeDisplay />
                 </SidebarProvider>
                 <Toaster />
               </ThemeProvider>

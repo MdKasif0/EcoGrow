@@ -55,6 +55,13 @@ export interface GrowthStage {
   duration_days?: number; // Duration in days if applicable
   tasks?: string[]; // Recommended tasks for this stage
   environmental_conditions?: any; // Ideal conditions
+  
+  // Added properties from mock data to GrowthStage interface
+  instructions?: string[];
+  media?: { type: string; url: string; alt?: string }[]; // Assuming a structure for media
+  toolsNeeded?: string[];
+  tips?: string[];
+  warnings?: string[];
 }
 
 export interface GrowingGuide {
