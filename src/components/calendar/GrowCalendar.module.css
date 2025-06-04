@@ -4,23 +4,24 @@
 /* The :root block below was moved to globals.css to fix build error */
 /*
 :root {
-  --ecogrow-primary-dark: #4ade80; /* Example: Tailwind green-400 */
-  --ecogrow-accent-dark: #bae6fd;  /* Example: Tailwind sky-200 */
-  --ecogrow-bg-dark: #1f2937; /* Example: Tailwind gray-800 */
-  --ecogrow-surface-dark: #374151; /* Example: Tailwind gray-700 */
-  --ecogrow-text-dark: #f3f4f6; /* Example: Tailwind gray-100 */
-  --ecogrow-text-muted-dark: #9ca3af; /* Example: Tailwind gray-400 */
-  --ecogrow-border-dark: #4b5563; /* Example: Tailwind gray-600 */
+  --ecogrow-primary-dark: #4ade80; /* Example: Tailwind green-400 *\/
+  --ecogrow-accent-dark: #bae6fd;  /* Example: Tailwind sky-200 *\/
+  --ecogrow-bg-dark: #1f2937; /* Example: Tailwind gray-800 *\/
+  --ecogrow-surface-dark: #374151; /* Example: Tailwind gray-700 *\/
+  --ecogrow-text-dark: #f3f4f6; /* Example: Tailwind gray-100 *\/
+  --ecogrow-text-muted-dark: #9ca3af; /* Example: Tailwind gray-400 *\/
+  --ecogrow-border-dark: #4b5563; /* Example: Tailwind gray-600 *\/
 
-  /* Event colors (adjust these based on task type if needed) */
-  --ecogrow-event-water: #60a5fa;     /* Blue */
-  --ecogrow-event-fertilize: #34d399; /* Emerald */
-  --ecogrow-event-harvest: #facc15;   /* Yellow */
-  --ecogrow-event-prune: #a78bfa;     /* Violet */
-  --ecogrow-event-pest: #f87171;      /* Red */
-  --ecogrow-event-other: #9ca3af;    /* Gray */
-}
+  /* Event colors (adjust these based on task type if needed) *\/
+  --ecogrow-event-water: #60a5fa;     /* Blue *\/
+  --ecogrow-event-fertilize: #34d399; /* Emerald *\/
+  --ecogrow-event-harvest: #facc15;   /* Yellow *\/
+  --ecogrow-event-prune: #a78bfa;     /* Violet *\/
+  --ecogrow-event-pest: #f87171;      /* Red *\/
+  --ecogrow-event-other: #9ca3af;    /* Gray *\/
+} <-- **Remove this line or just the } on this line**
 */
+
 
 .ecogrowCalendarRoot {
   font-family: 'Inter', sans-serif;
