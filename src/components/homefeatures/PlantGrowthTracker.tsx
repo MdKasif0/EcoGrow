@@ -120,9 +120,9 @@ export default function PlantGrowthTracker() {
              )}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Log photos, notes, and health conditions for your plants. Visualize progress in a timeline or gallery format.
-          </p>
+        <p className="text-sm text-muted-foreground">
+          Log photos, notes, and health conditions for your plants. Visualize progress in a timeline or gallery format.
+        </p>
         )}
       </CardContent>
       <CardFooter>

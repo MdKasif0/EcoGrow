@@ -52,7 +52,7 @@ export default function SmartCalendarReminders() {
       <CardHeader className="flex flex-row items-center gap-3">
         <CalendarDays size={28} className="text-primary group-hover:animate-sprout origin-bottom transition-transform duration-300" />
         <div>
-          <CardTitle className="font-serif">Smart Calendar & Reminders</CardTitle>
+        <CardTitle className="font-serif">Smart Calendar & Reminders</CardTitle>
           <CardDescription className="text-sm">
             {todayTasks.length} tasks for today
           </CardDescription>
@@ -60,7 +60,7 @@ export default function SmartCalendarReminders() {
       </CardHeader>
       <CardContent className="flex-grow space-y-3">
         {todayTasks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
             No tasks scheduled for today. Time to plan your next gardening activities!
           </p>
         ) : (
