@@ -1,6 +1,8 @@
 /* EcoGrow FullCalendar Custom Theme - Dark */
 
 /* Define dark theme colors (adjust these to match your specific brand dark theme) */
+/* The :root block below was moved to globals.css to fix build error */
+/*
 :root {
   --ecogrow-primary-dark: #4ade80; /* Example: Tailwind green-400 */
   --ecogrow-accent-dark: #bae6fd;  /* Example: Tailwind sky-200 */
@@ -18,6 +20,7 @@
   --ecogrow-event-pest: #f87171;      /* Red */
   --ecogrow-event-other: #9ca3af;    /* Gray */
 }
+*/
 
 .ecogrowCalendarRoot {
   font-family: 'Inter', sans-serif;

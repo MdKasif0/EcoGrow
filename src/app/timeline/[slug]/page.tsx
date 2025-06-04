@@ -50,7 +50,7 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
         setTimeline(null);
     }
 
-  }, [plantId]); // Regenerate if plantId changes
+  }, [plantId, journalService, timelineService, taskService]); // Added dependencies
 
   // TODO: Handle cases where journal or timeline are null
 
@@ -68,7 +68,7 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
       <DynamicMetaTags
         title={`${journal?.plant_name || plantId} Growth Timeline`}
         description={`Track the growth journey of your ${journal?.plant_name || plantId} from seed to harvest with our interactive timeline visualization.`}
-        keywords={[...defaultKeywords, (journal?.plant_name || plantId), 'timeline', 'growth stages', 'plant tracking']}
+        keywords={['plant growth', 'garden management', 'plant tracking', 'growing guide', 'plant journal', 'garden calendar', 'plant care', 'harvest tracking', (journal?.plant_name || plantId), 'timeline', 'growth stages', 'plant tracking']}
         ogType="article"
         canonicalUrl={`https://eco-grow.netlify.app/timeline/${params.slug}`}
       />
