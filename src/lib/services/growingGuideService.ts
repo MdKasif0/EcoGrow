@@ -1,7 +1,7 @@
 import { GrowingGuide, PlantProgress, StageProgress } from '@/types/growing-guide';
 
 // Cleaned up and verified mock database of growing guides
-const growingGuides: Record<string, GrowingGuide> = {
+export const growingGuides: Record<string, GrowingGuide> = {
   basil_001: {
     id: 'basil_001',
     plantName: 'Sweet Basil',
@@ -362,6 +362,17 @@ const growingGuides: Record<string, GrowingGuide> = {
     ]
   }
 };
+
+/**
+ * Calculates the current growth stage of a plant based on the current date and planting date.
+ * @param currentDate The current date.
+ * @param plantingDate The date the plant was planted.
+ * @param guide The GrowingGuide for the plant.
+ * @returns The current GrowthStage object, or null if the stage cannot be determined.
+ */
+export function calculateGrowthStage(currentDate: Date, plantingDate: Date, guide: GrowingGuide): GrowthStage | null {
+  // ... function logic ...
+}
 
 // Local storage key for progress
 const PROGRESS_STORAGE_KEY = 'growing_guide_progress';
