@@ -255,6 +255,21 @@ export interface ProduceInfo {
   sustainabilityTips?: string[];
   carbonFootprintInfo?: string;
   staticRecipes?: Recipe[];
+  // New fields based on usage in item-details-page.tsx
+  uses?: string[];
+  originAndDomesticationHistory?: string;
+  climaticRequirements?: {
+    temperature?: string;
+    rainfall?: string;
+    altitude?: string;
+  };
+  soilPreferences?: string;
+  irrigationAndWaterNeeds?: string;
+  plantingAndHarvestCycles?: string; // Note: Consider if this overlaps with 'seasons'
+  pestAndDiseaseManagement?: string;
+  postHarvestHandling?: string;
+  majorProducingCountriesOrRegions?: string[];
+  marketValueAndGlobalDemand?: string;
 }
 
 const fruits: ProduceInfo[] = [

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, Send, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { growingGuideService } from '@/lib/services/growingGuideService';
 
 interface Message {
@@ -29,33 +29,34 @@ export function AIGrowingAssistant({ plantName, currentStage }: AIGrowingAssista
   const { toast } = useToast();
 
   const generateAIResponse = (question: string, plantName: string, stage: string): string => {
-    const guide = growingGuideService.getAllGuides().find(g => g.plantName === plantName);
+    const guide = growingGuideService.getAllGuides().find(g => g.plant_name === plantName);
     if (!guide) return "I'm sorry, I couldn't find information about this plant.";
 
-    const currentStageData = guide.stages.find(s => s.id === stage);
+    // Ensure guide.stages is accessed safely, though type system should guarantee it if guide is found.
+    const currentStageData = guide.stages?.find(s => s.id === stage);
     if (!currentStageData) return "I'm sorry, I couldn't find information about this stage.";
 
     const lowerQuestion = question.toLowerCase();
 
     // Check for common questions
     if (lowerQuestion.includes('water') || lowerQuestion.includes('watering')) {
-      return `For ${plantName} during the ${currentStageData.title} stage, ${currentStageData.instructions.find(i => i.toLowerCase().includes('water')) || 'water when the top inch of soil feels dry.'}`;
+      return `For ${plantName} during the ${currentStageData.name} stage, ${currentStageData.instructions?.find(i => i.toLowerCase().includes('water')) || 'water when the top inch of soil feels dry.'}`;
     }
 
     if (lowerQuestion.includes('light') || lowerQuestion.includes('sun')) {
-      return `For ${plantName} during the ${currentStageData.title} stage, ${currentStageData.instructions.find(i => i.toLowerCase().includes('light') || i.toLowerCase().includes('sun')) || 'provide adequate sunlight based on the plant\'s needs.'}`;
+      return `For ${plantName} during the ${currentStageData.name} stage, ${currentStageData.instructions?.find(i => i.toLowerCase().includes('light') || i.toLowerCase().includes('sun')) || 'provide adequate sunlight based on the plant\'s needs.'}`;
     }
 
     if (lowerQuestion.includes('fertiliz') || lowerQuestion.includes('feed')) {
-      return `For ${plantName} during the ${currentStageData.title} stage, ${currentStageData.instructions.find(i => i.toLowerCase().includes('fertiliz')) || 'fertilize according to the plant\'s specific needs.'}`;
+      return `For ${plantName} during the ${currentStageData.name} stage, ${currentStageData.instructions?.find(i => i.toLowerCase().includes('fertiliz')) || 'fertilize according to the plant\'s specific needs.'}`;
     }
 
     if (lowerQuestion.includes('problem') || lowerQuestion.includes('issue')) {
-      return `Common issues during the ${currentStageData.title} stage include: ${currentStageData.warnings.join(', ')}. ${currentStageData.tips.join(' ')}`;
+      return `Common issues during the ${currentStageData.name} stage include: ${currentStageData.warnings?.join(', ') || 'No specific warnings listed.'}. ${currentStageData.tips?.join(' ') || 'No specific tips listed.'}`;
     }
 
     // If no specific match, provide general stage information
-    return `For the ${currentStageData.title} stage of ${plantName}, here are the key points:\n\n${currentStageData.instructions.join('\n')}\n\nTips: ${currentStageData.tips.join(', ')}\n\nWarnings: ${currentStageData.warnings.join(', ')}`;
+    return `For the ${currentStageData.name} stage of ${plantName}, here are the key points:\n\n${currentStageData.instructions?.join('\n') || 'No specific instructions.'}\n\nTips: ${currentStageData.tips?.join(', ') || 'No specific tips.'}\n\nWarnings: ${currentStageData.warnings?.join(', ') || 'No specific warnings.'}`;
   };
 
   const handleSend = async () => {

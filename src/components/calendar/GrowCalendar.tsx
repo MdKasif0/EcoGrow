@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { GrowTask, TaskType } from '@/types/calendar';
 import { TaskService } from '@/lib/services/taskService';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import styles from './GrowCalendar.module.css';
 
 // Define colors using CSS variables from the module
