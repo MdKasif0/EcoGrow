@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GrowTask, TaskType, TaskStatus } from '@/types/calendar';
 import { TaskService } from '@/lib/services/taskService';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { CheckCircle2, Clock, CircleDotDashed } from 'lucide-react';
 import { format } from 'date-fns';
 

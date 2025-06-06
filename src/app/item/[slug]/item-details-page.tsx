@@ -38,7 +38,11 @@ const MineralChart = dynamic(() => import('@/components/charts/MineralChart'), {
   ssr: false
 });
 
-const getSeverityBadgeVariant = (severity: ProduceInfo['potentialAllergies'][0]['severity']): "default" | "secondary" | "destructive" | "outline" => {
+// Correctly derive AllergySeverity type from ProduceInfo
+type AllergySeverity = NonNullable<ProduceInfo['potentialAllergies']>[number]['severity'];
+
+const getSeverityBadgeVariant = (severity?: AllergySeverity): "default" | "secondary" | "destructive" | "outline" => {
+  if (!severity) return 'secondary'; // Default if severity is undefined
   switch (severity) {
     case 'Severe':
       return 'destructive';
@@ -358,7 +362,7 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
           </section>
           <IconLabel icon={Heart} label="Health Benefits" className="bg-card rounded-lg shadow-lg">
             <ul className="list-disc list-inside space-y-1 text-card-foreground/90">
-              {produce.healthBenefits.map(benefit => <li key={benefit}>{benefit}</li>)}
+              {(produce.healthBenefits ?? []).map(benefit => <li key={benefit}>{benefit}</li>)}
             </ul>
           </IconLabel>
         </TabsContent>
@@ -399,9 +403,9 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
 
         <TabsContent value="additional" className="mt-6 space-y-6 px-2 md:px-0">
             <IconLabel icon={AlertTriangle} label="Potential Allergies & Sensitivities" className="bg-card rounded-lg shadow-lg">
-            {produce.potentialAllergies.length > 0 ? (
+            {(produce.potentialAllergies && produce.potentialAllergies.length > 0) ? (
                 <ul className="space-y-3">
-                {produce.potentialAllergies.map((allergy, index) => (
+                {(produce.potentialAllergies ?? []).map((allergy, index) => (
                     <li key={index} className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                         <MessageCircleWarning className="h-4 w-4 text-destructive shrink-0" />

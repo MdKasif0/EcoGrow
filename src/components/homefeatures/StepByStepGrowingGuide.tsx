@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Check, Camera, MessageSquare, StickyNote } from 'lucide-react';
 import { PlantRecommendation } from '@/lib/ai/plantRecommender';
 import { growingGuideService } from '@/lib/services/growingGuideService';
-import { GrowingGuide, PlantProgress } from '@/types/growing-guide';
+import { GrowingGuide } from '@/types/plant-journal'; // Corrected import for GrowingGuide
+import { PlantProgress } from '@/types/growing-guide'; // PlantProgress can stay from here
 import { AIGrowingAssistant } from '@/components/growing-guide/AIGrowingAssistant';
 import {
   Dialog,
@@ -52,7 +53,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
   const handleStageComplete = (stageId: string) => {
     if (!progress || !guide) return;
 
-    const updatedProgress = growingGuideService.updateStageProgress(guide.id, stageId, {
+    const updatedProgress = growingGuideService.updateStageProgress(guide.guide_id, stageId, {
       completed: true
     });
 
@@ -138,7 +139,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
     <Card className="p-6">
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold mb-2">{guide.plantName} Growing Guide</h2>
+          <h2 className="text-2xl font-bold mb-2">{guide.plant_name} Growing Guide</h2>
           <Progress value={progressPercentage} className="h-2" />
           <p className="text-sm text-muted-foreground mt-2">
             {completedStages} of {totalStages} stages completed
@@ -166,7 +167,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
                         ) : (
                           <div className="h-6 w-6 rounded-full border-2 border-primary" />
                         )}
-                        <h3 className="font-semibold">{stage.title}</h3>
+                        <h3 className="font-semibold">{stage.name}</h3>
                       </div>
                       {isExpanded ? (
                         <ChevronUp className="h-5 w-5 text-muted-foreground" />
@@ -316,7 +317,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
 
         {showAI && (
           <AIGrowingAssistant
-            plantName={guide.plantName}
+            plantName={guide.plant_name}
             currentStage={expandedStage || guide.stages[0].id}
           />
         )}

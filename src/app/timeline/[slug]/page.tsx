@@ -82,14 +82,15 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
         </div>
 
         {/* Render the timeline component or a message */}
-        {timeline ? (
-          <PlantTimelineComponent timeline={timeline} journal={journal} tasks={tasks} /> {/* Pass journal and tasks */}
-        ) : (journal && !journal.planting_date ? (
-            <p className="text-lg text-muted-foreground text-center">Planting date is required to generate the timeline. Please add a journal entry with a planting date.</p>
-        ) : (
-             <p className="text-lg text-muted-foreground text-center">Loading timeline data or journal not found...</p>
-        ))
-        }
+        {(() => {
+          if (timeline) {
+            return <PlantTimelineComponent timeline={timeline} journal={journal} tasks={tasks} />;
+          } else if (journal && !journal.planting_date) {
+            return <p className="text-lg text-muted-foreground text-center">Planting date is required to generate the timeline. Please add a journal entry with a planting date.</p>;
+          } else {
+            return <p className="text-lg text-muted-foreground text-center">Loading timeline data or journal not found...</p>;
+          }
+        })()}
 
          {/* TODO: Add a link or button to add a journal entry if needed */}
           {journal && !journal.planting_date && (
@@ -103,4 +104,4 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
       </div>
     </>
   );
-} 
+}

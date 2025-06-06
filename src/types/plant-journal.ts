@@ -41,6 +41,9 @@ export interface PlantJournalEntry {
 
 export interface PlantJournal {
   plant_id: string;
+  plant_name?: string; // Added: Name of the plant this journal is for
+  image?: string;      // Added: Main image URL for this plant in the journal
+  createdAt?: string;  // Added: ISO date string when the journal was created
   entries: PlantJournalEntry[];
   plant_nickname?: string;
   planting_date: string;
@@ -70,4 +73,13 @@ export interface GrowingGuide {
     plant_name: string; // Full or common name
     stages: GrowthStage[];
     // other guide details
-} 
+
+    // Properties for taskService and potentially other components
+    wateringFrequency?: string;
+    wateringInstructions?: string;
+    fertilizingFrequency?: string;
+    fertilizingInstructions?: string;
+    harvestTime?: string;
+    harvestingInstructions?: string;
+    // Consider if more structured types are needed for frequency/time
+}
