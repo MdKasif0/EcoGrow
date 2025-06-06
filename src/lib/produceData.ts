@@ -240,18 +240,18 @@ export interface ProduceInfo {
   seasons: string[];
   nutrition: {
     calories: string;
-    macronutrients: Array<{ name: string; value: number; unit: string }>;
-    vitamins: Array<{ name: string; value: number; unit: string; rdi?: string }>;
-    minerals: Array<{ name: string; value: number; unit: string; rdi?: string }>;
+    macronutrients: Array<{ name: string; value?: string | number; unit: string }>;
+    vitamins: Array<{ name: string; value?: string | number; unit?: string; rdi?: string }>;
+    minerals: Array<{ name: string; value?: string | number; unit?: string; rdi?: string }>;
   };
-  healthBenefits: string[];
-  potentialAllergies: Array<{
+  healthBenefits?: string[];
+  potentialAllergies?: Array<{
     name: string;
     severity: 'Mild' | 'Moderate' | 'Severe' | 'Common' | 'Rare' | 'Varies' | 'Harmless' | 'Low' | 'Low to Moderate' | 'Moderate to High' | 'Very Low';
     details?: string;
   }>;
-  cultivationProcess: string;
-  growthDuration: string;
+  cultivationProcess?: string;
+  growthDuration?: string;
   sustainabilityTips?: string[];
   carbonFootprintInfo?: string;
   staticRecipes?: Recipe[];
