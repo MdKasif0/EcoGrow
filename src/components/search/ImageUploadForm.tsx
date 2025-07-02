@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, type ChangeEvent, type FormEvent, useEffect } from 'react';
+import { useState, useRef, type ChangeEvent, type FormEvent, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { UploadCloud, Image as ImageIcon, Camera, AlertTriangle, X, Zap, RefreshCcw, ImageUp, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -38,7 +38,7 @@ export default function ImageUploadForm({ onSuccessfulScan, onCloseDialog }: Ima
   const router = useRouter();
   const { toast } = useToast();
 
-  const getCameraPermissionInternal = async () => {
+  const getCameraPermissionInternal = useCallback(async () => {
     setHasCameraPermission(null); 
     setError(null);
 
@@ -73,7 +73,7 @@ export default function ImageUploadForm({ onSuccessfulScan, onCloseDialog }: Ima
       setHasCameraPermission(false);
       toast({ variant: 'destructive', title: 'Camera Access Issue', description: message, duration: 5000 });
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     let localStreamRef: MediaStream | null = null;
@@ -100,16 +100,17 @@ export default function ImageUploadForm({ onSuccessfulScan, onCloseDialog }: Ima
       setError(null);
     }
 
+    const currentVideoNode = videoRef.current;
     return () => {
       if (localStreamRef) {
         localStreamRef.getTracks().forEach(track => track.stop());
       }
-      if (videoRef.current && videoRef.current.srcObject) {
-        videoRef.current.pause();
-        videoRef.current.srcObject = null;
+      if (currentVideoNode && currentVideoNode.srcObject) {
+        currentVideoNode.pause();
+        currentVideoNode.srcObject = null;
       }
     };
-  }, [isCameraMode, toast]); // hasCameraPermission is not explicitly listed, but its state is managed internally and drives calls to getCameraPermissionInternal within this effect
+  }, [isCameraMode, toast, getCameraPermissionInternal, hasCameraPermission]);
 
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {

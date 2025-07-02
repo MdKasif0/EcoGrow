@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GrowTask, TaskType, TaskStatus } from '@/types/calendar';
 import { TaskService } from '@/lib/services/taskService';
 import { useToast } from '@/hooks/use-toast';
@@ -22,23 +22,18 @@ export default function TodayTasks() {
   const { toast } = useToast();
   const taskService = TaskService.getInstance();
 
-  useEffect(() => {
-    loadTodayTasks();
-  }, [selectedTypes, selectedStatus]);
-
-  const loadTodayTasks = () => {
+  const loadTodayTasks = useCallback(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0,0,0,0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const allTasks = taskService.getTasks({
-      startDate: today.toISOString(),
-      endDate: tomorrow.toISOString(),
-    });
-
+    const allTasks = taskService.getTasks({ startDate: today.toISOString(), endDate: tomorrow.toISOString() });
     setTasks(allTasks);
-  };
+  }, [taskService]);
+
+  useEffect(() => {
+    loadTodayTasks();
+  }, [loadTodayTasks]); // Reload when filters change
 
   const handleTaskComplete = (taskId: string) => {
     taskService.updateTaskStatus(taskId, 'completed');
@@ -61,9 +56,9 @@ export default function TodayTasks() {
   const filteredTasks = tasks.filter(task =>
     (selectedTypes.length === 0 || selectedTypes.includes(task.taskType)) &&
     (selectedStatus.length === 0 || selectedStatus.includes(task.status))
-  ).sort((a, b) => {
+  ).sort((a: GrowTask, b: GrowTask) => {
     const statusOrder: Record<TaskStatus, number> = { 'missed': 0, 'snoozed': 1, 'pending': 2, 'completed': 3 };
-    return statusOrder[task.status] - statusOrder[b.status];
+    return statusOrder[a.status] - statusOrder[b.status];
   });
 
   const toggleTaskType = (type: TaskType) => {

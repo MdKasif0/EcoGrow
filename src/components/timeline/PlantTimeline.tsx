@@ -270,19 +270,20 @@ export function PlantTimeline({ timeline, journal, tasks }: PlantTimelineProps) 
       const container = timelineRef.current;
       if (!container) return;
 
-      let startX = 0;
-      let scrollLeft = 0;
-
       const handleMouseDown = (e: MouseEvent) => {
-          startX = e.pageX - container.offsetLeft;
-          scrollLeft = container.scrollLeft;
+          // Store startX and scrollLeft on the DOM element's dataset
+          // to be accessed by handleMouseMove without being dependencies of useEffect.
+          container.dataset.startX = (e.pageX - container.offsetLeft).toString();
+          container.dataset.scrollLeft = container.scrollLeft.toString();
           setIsPanning(true);
           container.style.cursor = 'grabbing';
           container.style.userSelect = 'none';
       };
 
       const handleMouseLeave = () => {
-          setIsPanning(false);
+          // Only stop panning if mouse button is not held (though mouseup should handle primary cases)
+          // This might be redundant if mouseup is reliable.
+          if (isPanning) setIsPanning(false);
           container.style.cursor = 'grab';
           container.style.removeProperty('user-select');
       };
@@ -291,11 +292,16 @@ export function PlantTimeline({ timeline, journal, tasks }: PlantTimelineProps) 
           setIsPanning(false);
           container.style.cursor = 'grab';
           container.style.removeProperty('user-select');
+          // Clean up dataset attributes
+          delete container.dataset.startX;
+          delete container.dataset.scrollLeft;
       };
 
       const handleMouseMove = (e: MouseEvent) => {
           if (!isPanning) return;
           e.preventDefault();
+          const startX = parseFloat(container.dataset.startX || '0');
+          const scrollLeft = parseFloat(container.dataset.scrollLeft || '0');
           const x = e.pageX - container.offsetLeft;
           const walk = (x - startX) * 2; // Scroll speed
           container.scrollLeft = scrollLeft - walk;
@@ -312,7 +318,7 @@ export function PlantTimeline({ timeline, journal, tasks }: PlantTimelineProps) 
           container.removeEventListener('mouseup', handleMouseUp);
           container.removeEventListener('mousemove', handleMouseMove);
       };
-  }, [pixelsPerDay, isPanning, startX, scrollLeft]); // Re-run effect if these states change
+  }, [isPanning, setIsPanning]); // Dependencies updated
 
   return (
     <div className="relative w-full overflow-x-auto p-4 bg-card rounded-lg shadow-lg">

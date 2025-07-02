@@ -14,7 +14,7 @@ jest.mock('lucide-react', () => ({
 // This basic mock allows us to simulate value changes.
 // A more complex mock might be needed if specific slider interactions are tested.
 jest.mock('@/components/ui/slider', () => ({
-  Slider: ({ value, onValueChange, ...props }) => (
+  Slider: ({ value, onValueChange, ...props }: { value?: number[]; onValueChange: (value: number[]) => void; min?: number; max?: number; step?: number; defaultValue?: number[] }) => (
     <input
       type="range"
       data-testid="slider"

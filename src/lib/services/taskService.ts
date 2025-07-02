@@ -1,6 +1,7 @@
 import { GrowTask, TaskType, TaskImportance } from '@/types/calendar';
-import { Plant } from '@/types/plant';
-import { GrowingGuide } from '@/types/growing-guide';
+import { GrowingGuide } from '@/types/plant-journal';
+
+interface Plant { id: string; commonName: string; }
 
 export class TaskService {
   private static instance: TaskService;
@@ -76,20 +77,23 @@ export class TaskService {
     }
 
     // Add harvest task
-    if (guide.harvestTime) {
-      const harvestDate = new Date(plantDate);
-      harvestDate.setDate(harvestDate.getDate() + guide.harvestTime);
-      
-      newTasks.push({
-        id: crypto.randomUUID(),
-        plantId: plant.id,
-        plantName: plant.commonName,
-        taskType: 'harvest',
-        date: harvestDate.toISOString(),
-        importance: 'critical',
-        status: 'pending',
-        notes: guide.harvestingInstructions
-      });
+    if (guide.harvestTime !== undefined) {
+      const harvestDuration = parseInt(guide.harvestTime, 10);
+      if (!isNaN(harvestDuration)) {
+        const harvestDate = new Date(plantDate);
+        harvestDate.setDate(harvestDate.getDate() + harvestDuration);
+
+        newTasks.push({
+          id: crypto.randomUUID(),
+          plantId: plant.id,
+          plantName: plant.commonName,
+          taskType: 'harvest',
+          date: harvestDate.toISOString(),
+          importance: 'critical',
+          status: 'pending',
+          notes: guide.harvestingInstructions
+        });
+      }
     }
 
     this.tasks = [...this.tasks, ...newTasks];

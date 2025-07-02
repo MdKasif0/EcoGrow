@@ -2,8 +2,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PlantRecommendation } from './plantRecommender';
 import type { PlannerData } from '@/types/planner';
 
-const GEMINI_API_KEY = 'AIzaSyCjpJoM126p3HmoSCrYTUrLshQTvCUumWk';
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const GEMINI_API_KEY = process.env.GOOGLE_API_KEY;
+if (!GEMINI_API_KEY) {
+  console.error("CRITICAL: GOOGLE_API_KEY environment variable is not set for geminiService.ts. AI features will fail if this service is used directly by client code not routed via server actions that check the key.");
+}
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || ''); // Initialize even if undefined, calls will fail
 
 const SYSTEM_PROMPT = `You are an expert horticulturist and plant recommendation system. 
 Your task is to recommend plants based on the user's growing conditions and preferences.

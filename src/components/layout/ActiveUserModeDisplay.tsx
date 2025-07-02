@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCurrentUserMode, type UserModeId } from '@/lib/userDataStore';
+import { getCurrentUserMode } from '@/lib/userDataStore';
+import type { UserModeId } from '@/lib/constants';
 import { USER_MODES, DEFAULT_USER_MODE_ID } from '@/lib/constants';
 import { ShieldCheck } from 'lucide-react'; // Example Icon
 

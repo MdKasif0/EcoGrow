@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Camera, Leaf, Smile, Frown, HeartPulse } from 'lucide-react';
@@ -48,7 +49,7 @@ export default function PlantGrowthTracker() {
 
   // Find the latest entry across all journals and count how many plants have journals
   useEffect(() => {
-    const allJournals = Object.values(journalService.journals); // Accessing directly for demo
+    const allJournals = Object.values(journalService.getAllJournals()); // Accessing directly for demo
     setJournaledPlantsCount(allJournals.length);
     let latest: PlantJournalEntry | undefined;
     let latestDate = new Date(0);
@@ -64,7 +65,7 @@ export default function PlantGrowthTracker() {
     });
 
     setLatestEntry(latest);
-  }, []); // Empty dependency array means this runs once on mount
+  }, [journalService]);
 
   const handleTrackProgress = () => {
     if (journaledPlantsCount === 1 && latestEntry) {
@@ -103,13 +104,15 @@ export default function PlantGrowthTracker() {
              {latestEntry.photos && latestEntry.photos.length > 0 && (
                 <div className="flex gap-2 mt-2">
                     {latestEntry.photos.slice(0, 2).map(photo => (
-                        // Use next/image here with proper configuration
-                        <img 
-                            key={photo.id} 
-                            src={photo.url} 
-                            alt={photo.alt || 'Plant photo'} 
-                            className="w-16 h-16 object-cover rounded-md shadow"
-                        />
+                        <div key={photo.id} className="relative w-16 h-16 rounded-md shadow overflow-hidden">
+                          <Image
+                              key={photo.id}
+                              src={photo.url}
+                              alt={photo.alt || 'Plant photo'}
+                              layout="fill"
+                              objectFit="cover"
+                          />
+                        </div>
                     ))}
                      {latestEntry.photos.length > 2 && (
                          <div className="w-16 h-16 flex items-center justify-center bg-muted rounded-md text-xs text-muted-foreground">

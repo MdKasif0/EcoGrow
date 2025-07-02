@@ -35,6 +35,10 @@ export class PlantJournalService {
     localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(this.journals));
   }
 
+  public getAllJournals(): Record<string, PlantJournal> {
+    return this.journals;
+  }
+
   public getJournal(plantId: string): PlantJournal | undefined {
     return this.journals[plantId];
   }
@@ -48,6 +52,7 @@ export class PlantJournalService {
     if (!this.journals[plantId]) {
       this.journals[plantId] = {
         plant_id: plantId,
+        planting_date: entry.date, // Add planting_date here
         entries: []
       };
     }

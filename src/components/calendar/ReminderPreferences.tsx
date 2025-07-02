@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ReminderPreferences, TaskType, ReminderTime } from '@/types/calendar';
+import { ReminderPreferences as ReminderPreferencesType, TaskType, ReminderTime } from '@/types/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const defaultPreferences: ReminderPreferences = {
+const defaultPreferences: ReminderPreferencesType = {
   defaultReminderTime: 'morning',
   enabledTaskTypes: ['water', 'fertilize', 'harvest'],
   notificationTone: 'friendly',
@@ -15,7 +15,7 @@ const defaultPreferences: ReminderPreferences = {
 };
 
 export default function ReminderPreferences() {
-  const [preferences, setPreferences] = useState<ReminderPreferences>(defaultPreferences);
+  const [preferences, setPreferences] = useState<ReminderPreferencesType>(defaultPreferences);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function ReminderPreferences() {
     }
   };
 
-  const savePreferences = (newPreferences: ReminderPreferences) => {
+  const savePreferences = (newPreferences: ReminderPreferencesType) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem('reminderPreferences', JSON.stringify(newPreferences));
     setPreferences(newPreferences);
