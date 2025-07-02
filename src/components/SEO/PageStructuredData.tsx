@@ -3,7 +3,7 @@
 import { StructuredData } from './StructuredData';
 
 interface PageStructuredDataProps {
-  type: 'Article' | 'Product' | 'FAQPage';
+  type: string;
   data: Record<string, any>;
 }
 

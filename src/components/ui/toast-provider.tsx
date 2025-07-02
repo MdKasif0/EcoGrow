@@ -14,6 +14,8 @@ import { ToastContext } from "@/components/ui/use-toast";
 
 interface ToastMessage extends ToastProps {
   id: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
 }
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

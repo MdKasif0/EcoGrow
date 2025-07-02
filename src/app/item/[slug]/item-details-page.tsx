@@ -545,7 +545,7 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
             <IconLabel icon={FlaskConical} label="Soil Suitability Checker (Future AI Feature)" className="bg-card rounded-lg shadow-lg">
               {produce.soilPreferences && produce.soilPreferences.trim() !== "" ? (
                 <p className="text-card-foreground/90 mb-2">
-                  This plant's general soil preferences: <span className="italic">{produce.soilPreferences}</span>
+                  This plant&apos;s general soil preferences: <span className="italic">{produce.soilPreferences}</span>
                 </p>
               ) : (
                 <p className="text-muted-foreground mb-2">

@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import ImageUploadForm from '@/components/search/ImageUploadForm';
 import { Home, Settings, Bell, Palette, Leaf, MessagesSquare, ScanLine, Heart, KeyRound, Users, Search } from 'lucide-react'; // Added KeyRound, Users, Search
 import {
   Sidebar,
@@ -22,8 +25,10 @@ import InstallPWAButton from '@/components/pwa/InstallPWAButton';
 
 export default function DesktopSidebar() {
   const { state } = useSidebar();
+  const [isScanDialogOpen, setIsScanDialogOpen] = useState(false);
 
   return (
+    <>
     <Sidebar collapsible="icon" side="left" variant="sidebar" className="bg-neutral-900/80 backdrop-blur-lg text-foreground shadow-lg border-r border-border/30">
       <SidebarHeader className="p-4 flex items-center justify-between">
         {state === 'expanded' ? (
@@ -54,11 +59,13 @@ export default function DesktopSidebar() {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/scan" legacyBehavior passHref>
-              <SidebarMenuButton asChild tooltip="Scan Produce" className="text-foreground hover:bg-accent-emerald/10 hover:text-accent-emerald data-[active=true]:text-accent-emerald data-[active=true]:border-r-2 data-[active=true]:border-accent-emerald transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background">
-                <a><ScanLine /> <span>Scan Produce</span></a>
-              </SidebarMenuButton>
-            </Link>
+            <SidebarMenuButton
+              onClick={() => setIsScanDialogOpen(true)}
+              tooltip="Scan Produce"
+              className="text-foreground hover:bg-accent-emerald/10 hover:text-accent-emerald data-[active=true]:text-accent-emerald data-[active=true]:border-r-2 data-[active=true]:border-accent-emerald transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background"
+            >
+              <ScanLine /> <span>Scan Produce</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <Link href="/search" legacyBehavior passHref>
@@ -138,5 +145,16 @@ export default function DesktopSidebar() {
 
       </SidebarContent>
     </Sidebar>
+    <Dialog open={isScanDialogOpen} onOpenChange={setIsScanDialogOpen}>
+      <DialogContent className="p-0 bg-black text-gray-200 max-w-full w-full h-full sm:max-w-md sm:h-auto sm:max-h-[90vh] sm:rounded-2xl sm:shadow-xl overflow-hidden">
+        <DialogTitle className="sr-only">Scan or Upload Produce Image</DialogTitle> {/* Visually hidden title for accessibility */}
+        <ImageUploadForm
+          onSuccessfulScan={() => setIsScanDialogOpen(false)}
+          onCloseDialog={() => setIsScanDialogOpen(false)}
+        />
+        <DialogClose className="hidden" /> {/* If DialogClose is part of your DialogContent or handled by onOpenChange */}
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

@@ -87,9 +87,7 @@ export function StepByStepGuides() {
                               size="sm"
                               onClick={() => handlePlantSelect({
                                 id: plant.toLowerCase().replace(' ', '_'),
-                                name: plant,
-                                confidence: 1,
-                                reason: 'User selected'
+                                name: plant
                               })}
                               className="justify-start"
                             >

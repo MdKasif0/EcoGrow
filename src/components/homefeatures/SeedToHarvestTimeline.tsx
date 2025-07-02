@@ -10,13 +10,13 @@ export default function SeedToHarvestTimeline() {
       <CardHeader>
         <CardTitle className="font-serif">Seed-to-Harvest Timeline Visualization</CardTitle>
         <CardDescription>
-          Track your plant's journey from seed to harvest with interactive timelines
+          Track your plant&apos;s journey from seed to harvest with interactive timelines
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Interactive bars showing each plant's progress and milestones from seed to harvest.
+            Interactive bars showing each plant&apos;s progress and milestones from seed to harvest.
           </p>
           
           {/* Timeline Preview */}

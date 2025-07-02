@@ -47,7 +47,7 @@ export default function CalendarPage() {
                   : 'text-primary hover:bg-primary/10'
               }`}
             >
-              Today's Tasks
+              Today&apos;s Tasks
             </button>
             <button
               onClick={() => setActiveTab('preferences')}

@@ -25,8 +25,8 @@ export default function JournalOverviewPage() {
 
   useEffect(() => {
     // Fetch all existing journals when the page loads
-    setJournals(journalService.journals);
-  }, []);
+    setJournals(journalService.getAllJournals());
+  }, [journalService]);
 
   return (
     <div className="container mx-auto py-8 px-4">
