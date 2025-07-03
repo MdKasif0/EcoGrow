@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, CheckCircle2, AlertCircle, Lightbulb, Info } from 'lucide-react';
-import { GrowingGuide as GrowingGuideType, GrowingStage } from '@/types/growing-guide';
-import { useToast } from '@/components/ui/use-toast';
+import { GrowingGuide as GrowingGuideType, GrowthStage } from '@/types/plant-journal'; // Corrected import
+import { useToast } from '@/hooks/use-toast'; // Corrected import
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -37,18 +37,18 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
   const calculateProgress = () => {
     if (!progress) return 0;
     const completed = progress.stages.filter(stage => stage.completed).length;
-    return (completed / guide.growing_guide.length) * 100;
+    return (completed / guide.stages.length) * 100; // Changed from guide.growing_guide
   };
 
   const handleStageComplete = (stageIndex: number) => {
     onStageComplete?.(stageIndex);
     toast({
       title: "Stage Completed!",
-      description: `Great job completing the ${guide.growing_guide[stageIndex].stage} stage!`,
+      description: `Great job completing the ${guide.stages[stageIndex].name} stage!`, // Changed from guide.growing_guide[stageIndex].stage to guide.stages[stageIndex].name
     });
   };
 
-  const handleAskAI = (stage: GrowingStage) => {
+  const handleAskAI = (stage: GrowthStage) => { // Changed type from GrowingStage to GrowthStage
     setSelectedStage(stage);
     setShowAIChat(true);
   };
@@ -56,13 +56,13 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{guide.common_name} Growing Guide</h2>
+        <h2 className="text-2xl font-bold">{guide.plant_name} Growing Guide</h2>
         <Progress value={calculateProgress()} className="w-1/3" />
       </div>
 
       <div className="space-y-4">
-        {guide.growing_guide.map((stage, index) => (
-          <Card key={index} className="overflow-hidden">
+        {guide.stages.map((stage, index) => ( // Changed from guide.growing_guide
+          <Card key={stage.id} className="overflow-hidden">
             <button
               className="w-full p-4 flex items-center justify-between hover:bg-accent/50 transition-colors"
               onClick={() => setExpandedStage(expandedStage === index ? null : index)}
@@ -74,9 +74,9 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                   <div className="h-6 w-6 rounded-full border-2 border-primary" />
                 )}
                 <div className="text-left">
-                  <h3 className="font-semibold">{stage.stage}</h3>
+                  <h3 className="font-semibold">{stage.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {stage.duration_days} days
+                    {stage.duration_days ? `${stage.duration_days} days` : (stage.timing || 'Variable duration')}
                   </p>
                 </div>
               </div>
@@ -108,11 +108,11 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                     </div>
 
                     {/* Tools Needed */}
-                    {stage.tools_needed && (
+                    {stage.toolsNeeded && stage.toolsNeeded.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="font-medium">Tools Needed</h4>
                         <div className="flex flex-wrap gap-2">
-                          {stage.tools_needed.map((tool, i) => (
+                          {stage.toolsNeeded.map((tool, i) => (
                             <Badge key={i} variant="secondary">{tool}</Badge>
                           ))}
                         </div>
@@ -130,42 +130,43 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                         ))}
                         {stage.warnings?.map((warning, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-red-500">
-                            <AlertCircle className="h-4 w-4 mt-1" />
+                            <AlertTriangle className="h-4 w-4 mt-1" />
                             <span>{warning}</span>
                           </div>
                         ))}
+                        {/* Trivia not in GrowthStage from plant-journal.ts, remove or add to type
                         {stage.trivia?.map((trivia, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-blue-500">
                             <Info className="h-4 w-4 mt-1" />
                             <span>{trivia}</span>
                           </div>
-                        ))}
+                        ))} */}
                       </div>
                     )}
 
                     {/* Media */}
-                    {stage.media && (
+                    {stage.media && stage.media.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="font-medium">Visual Guide</h4>
-                        {stage.media.images && (
                           <div className="grid grid-cols-2 gap-2">
-                            {stage.media.images.map((image, i) => (
-                              <img
-                                key={i}
-                                src={image}
-                                alt={`${stage.stage} step ${i + 1}`}
-                                className="rounded-lg object-cover h-32 w-full"
-                              />
+                            {stage.media.map((mediaItem, i) => (
+                              <div key={i} className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                {mediaItem.type === 'image' ? (
+                                  <img
+                                    src={mediaItem.url}
+                                    alt={mediaItem.alt || `${stage.name} media ${i + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <video
+                                    src={mediaItem.url}
+                                    controls
+                                    className="w-full h-full object-cover"
+                                  />
+                                )}
+                              </div>
                             ))}
                           </div>
-                        )}
-                        {stage.media.video && (
-                          <video
-                            src={stage.media.video}
-                            controls
-                            className="w-full rounded-lg"
-                          />
-                        )}
                       </div>
                     )}
 
@@ -194,11 +195,12 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
       </div>
 
       <AnimatePresence>
-        {showAIChat && selectedStage && (
+        {showAIChat && selectedStage && guide && ( // Added guide null check
           <AIGrowingAssistant
-            stage={selectedStage}
-            plantName={guide.common_name}
-            onClose={() => setShowAIChat(false)}
+            plantName={guide.plant_name} // Use plant_name from the correct guide type
+            currentStage={selectedStage.id} // Pass currentStage id
+            // stage={selectedStage} // Prop 'stage' does not exist on AIGrowingAssistant
+            // onClose={() => setShowAIChat(false)} // Prop 'onClose' does not exist
           />
         )}
       </AnimatePresence>

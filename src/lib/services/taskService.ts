@@ -79,7 +79,7 @@ export class TaskService {
     if (guide.harvestTime) {
       const harvestDate = new Date(plantDate);
       harvestDate.setDate(harvestDate.getDate() + guide.harvestTime);
-      
+
       newTasks.push({
         id: crypto.randomUUID(),
         plantId: plant.id,

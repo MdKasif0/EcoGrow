@@ -104,10 +104,10 @@ export default function PlantGrowthTracker() {
                 <div className="flex gap-2 mt-2">
                     {latestEntry.photos.slice(0, 2).map(photo => (
                         // Use next/image here with proper configuration
-                        <img 
-                            key={photo.id} 
-                            src={photo.url} 
-                            alt={photo.alt || 'Plant photo'} 
+                        <img
+                            key={photo.id}
+                            src={photo.url}
+                            alt={photo.alt || 'Plant photo'}
                             className="w-16 h-16 object-cover rounded-md shadow"
                         />
                     ))}

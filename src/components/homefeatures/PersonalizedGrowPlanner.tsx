@@ -17,7 +17,7 @@ import MyGrowPlan from '../planner/MyGrowPlan';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Download, Share2, Copy, Trash2, Edit2 } from 'lucide-react';
 import type { PlantRecommendation } from '@/lib/ai/plantRecommender';
 import type { GrowPlan } from '@/lib/services/growPlanService';

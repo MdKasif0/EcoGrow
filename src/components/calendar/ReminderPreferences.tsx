@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReminderPreferences, TaskType, ReminderTime } from '@/types/calendar';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';

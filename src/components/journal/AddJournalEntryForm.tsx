@@ -226,14 +226,14 @@ export function AddJournalEntryForm({
           <div className="flex flex-wrap gap-3 mt-2">
             {photos.map((photo, index) => (
               <div key={index} className="relative">
-                <img 
+                <img
                   src={URL.createObjectURL(photo)}
                   alt={`Photo preview ${index + 1}`}
                   className="w-24 h-24 object-cover rounded-md shadow-sm"
                 />
-                <Button 
+                <Button
                   type="button"
-                  variant="ghost" 
+                  variant="ghost"
                   size="icon" 
                   onClick={() => handleRemovePhoto(index)}
                   className="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500/70 hover:bg-red-600/70 text-white p-1"

@@ -325,10 +325,10 @@ export default function PlantJournalPage() {
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                                 {entry.photos.map(photo => (
                                                     // Use img tag with Base64 source
-                                                    <img 
-                                                        key={photo.id} 
+                                                    <img
+                                                        key={photo.id}
                                                         src={photo.url} // This will be the Base64 string
-                                                        alt={photo.alt || 'Plant photo'} 
+                                                        alt={photo.alt || 'Plant photo'}
                                                         className="w-full h-32 object-cover rounded-md shadow-sm"
                                                     />
                                                 ))}
