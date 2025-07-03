@@ -14,8 +14,13 @@ import {
   type ToastActionElement,
 } from "@/components/ui/toast"
 
+interface ToastOptions extends ToastProps {
+  title?: string | React.ReactNode;
+  description?: string | React.ReactNode;
+}
+
 const ToastContext = React.createContext<{
-  toast: (options: ToastProps) => void
+  toast: (options: ToastOptions) => void
 } | undefined>(undefined)
 
 export function useToast() {

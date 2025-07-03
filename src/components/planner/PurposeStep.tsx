@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Carrot, Leaf, Grape, Flower2, HeartPulse, ShieldCheck } from 'lucide-react';
+import { Carrot, Leaf, Grape, Flower2, HeartPulse, ShieldCheck, Target } from 'lucide-react';
 
-const purposeOptions = [
+const plantTypeOptions = [
   { id: 'vegetables', label: 'Vegetables', icon: Carrot, description: "Grow your own food like tomatoes, cucumbers, peppers, etc." },
   { id: 'herbs', label: 'Herbs', icon: Leaf, description: "Fresh herbs like basil, mint, rosemary for culinary or aromatic uses." },
   { id: 'fruits', label: 'Fruits', icon: Grape, description: "Enjoy homegrown fruits such as berries, melons, or even dwarf fruit trees." },
@@ -11,70 +11,109 @@ const purposeOptions = [
   { id: 'pet_safe', label: 'Pet-Safe', icon: ShieldCheck, description: "Choose plants that are non-toxic to your beloved pets." },
 ];
 
+const goalsOptions = [
+  { id: 'food', label: 'Food Production', description: 'Grow edible plants for cooking and consumption.' },
+  { id: 'ornamental', label: 'Ornamental Display', description: 'Enhance aesthetic appeal with beautiful plants.' },
+  { id: 'medicinal', label: 'Medicinal Use', description: 'Cultivate plants for their health benefits.' },
+  { id: 'mixed', label: 'Mixed Goals', description: 'A combination of different gardening purposes.' },
+];
+
 interface PurposeStepProps {
-  onNext: (data: { purposes: string[] }) => void;
+  onNext: (data: { goals: string; plantTypes: string[] }) => void;
   onBack: () => void;
-  data: { purposes?: string[] };
+  data: { goals: string; plantTypes: string[] };
 }
 
 const PurposeStep: React.FC<PurposeStepProps> = ({ onNext, onBack, data }) => {
-  const [selectedPurposes, setSelectedPurposes] = useState<string[]>([]);
+  const [selectedPlantTypes, setSelectedPlantTypes] = useState<string[]>(data.plantTypes);
+  const [selectedGoal, setSelectedGoal] = useState<string>(data.goals);
 
   useEffect(() => {
-    // Ensure data.purposes is an array before setting state
-    if (Array.isArray(data.purposes)) {
-      setSelectedPurposes(data.purposes);
+    if (Array.isArray(data.plantTypes)) {
+      setSelectedPlantTypes(data.plantTypes);
     }
-  }, [data.purposes]);
+    setSelectedGoal(data.goals);
+  }, [data]);
 
-  const handleTogglePurpose = (purposeId: string) => {
-    setSelectedPurposes(prev =>
-      prev.includes(purposeId)
-        ? prev.filter(id => id !== purposeId)
-        : [...prev, purposeId]
+  const handleTogglePlantType = (plantTypeId: string) => {
+    setSelectedPlantTypes(prev =>
+      prev.includes(plantTypeId)
+        ? prev.filter(id => id !== plantTypeId)
+        : [...prev, plantTypeId]
     );
   };
 
   const handleSubmit = () => {
-    if (selectedPurposes.length > 0) {
-      onNext({ purposes: selectedPurposes });
+    if (selectedPlantTypes.length > 0 && selectedGoal) {
+      onNext({
+        goals: selectedGoal,
+        plantTypes: selectedPlantTypes,
+      });
     }
   };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-        What are your gardening goals? 🎯 <span className="text-sm font-normal text-gray-600 dark:text-gray-400">(Select all that apply)</span>
+      <h2 className="text-xl font-semibold text-gray-900">
+        What are your gardening goals and what do you want to grow? 🌱
       </h2>
 
-      <div className="flex flex-wrap gap-3">
-        {purposeOptions.map((option) => {
-          const Icon = option.icon;
-          const isSelected = selectedPurposes.includes(option.id);
-          return (
-            <button
-              key={option.id}
-              onClick={() => handleTogglePurpose(option.id)}
-              title={option.description} // Simple tooltip using title attribute
-              className={`p-3 border rounded-lg flex items-center space-x-2.5 transition-all min-w-[130px] justify-start hover:shadow-md
-                          ${isSelected
-                            ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-100 dark:bg-blue-900/40 shadow-md'
-                            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 bg-white dark:bg-gray-800'
-                          }
-                          text-gray-800 dark:text-gray-200`}
-            >
-              <Icon className={`h-6 w-6 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`} />
-              <span className="font-medium">{option.label}</span>
-            </button>
-          );
-        })}
+      <div>
+        <h3 className="text-lg font-medium text-gray-800 mb-3">Primary Gardening Goal</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          {goalsOptions.map((option) => {
+            const isSelected = selectedGoal === option.id;
+            return (
+              <button
+                key={option.id}
+                onClick={() => setSelectedGoal(option.id)}
+                title={option.description}
+                className={`p-3 border rounded-lg flex items-center space-x-2.5 transition-all min-w-[130px] justify-start hover:shadow-md
+                            ${isSelected
+                              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-100 shadow-md'
+                              : 'border-gray-300 hover:border-blue-400 bg-white'
+                            }
+                            text-gray-800`}
+              >
+                <Target className={`h-6 w-6 ${isSelected ? 'text-blue-600' : 'text-gray-500'}`} />
+                <span className="font-medium">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-medium text-gray-800 mb-3">What types of plants are you interested in? <span className="text-sm font-normal text-gray-600">(Select all that apply)</span></h3>
+        <div className="flex flex-wrap gap-3">
+          {plantTypeOptions.map((option) => {
+            const Icon = option.icon;
+            const isSelected = selectedPlantTypes.includes(option.id);
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleTogglePlantType(option.id)}
+                title={option.description}
+                className={`p-3 border rounded-lg flex items-center space-x-2.5 transition-all min-w-[130px] justify-start hover:shadow-md
+                            ${isSelected
+                              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-100 shadow-md'
+                              : 'border-gray-300 hover:border-blue-400 bg-white'
+                            }
+                            text-gray-800`}
+              >
+                <Icon className={`h-6 w-6 ${isSelected ? 'text-blue-600' : 'text-gray-500'}`} />
+                <span className="font-medium">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex justify-between pt-4">
         <Button onClick={onBack} variant="outline">
           Back
         </Button>
-        <Button onClick={handleSubmit} disabled={selectedPurposes.length === 0}>
+        <Button onClick={handleSubmit} disabled={selectedPlantTypes.length === 0 || !selectedGoal}>
           Next
         </Button>
       </div>

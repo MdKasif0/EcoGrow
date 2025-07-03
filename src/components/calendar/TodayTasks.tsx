@@ -97,48 +97,51 @@ export default function TodayTasks() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-3">Filter by Task Type</h3>
-        <div className="flex flex-wrap gap-3">
-          {['water', 'fertilize', 'harvest', 'prune', 'pest_control', 'other'].map(type => (
-            <button
-              key={type}
-              onClick={() => toggleTaskType(type as TaskType)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border
-                ${selectedTypes.includes(type as TaskType)
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-secondary text-secondary-foreground border-border hover:bg-secondary/80'
-                }`}
-            >
-              {taskTypeIcons[type as TaskType]} {type.charAt(0).toUpperCase() + type.slice(1)}
-            </button>
-          ))}
+    <div className="space-y-6 p-6 bg-card text-card-foreground rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 border-b pb-4 border-border">Today&apos;s Tasks</h2>
+      
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold mb-3 text-muted-foreground">Filter by Task Type</h3>
+          <div className="flex flex-wrap gap-2">
+            {['water', 'fertilize', 'harvest', 'prune', 'pest_control', 'other'].map(type => (
+              <button
+                key={type}
+                onClick={() => toggleTaskType(type as TaskType)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border
+                  ${selectedTypes.includes(type as TaskType)
+                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                    : 'bg-secondary text-secondary-foreground border-border hover:bg-secondary/80'
+                  }`}
+              >
+                {taskTypeIcons[type as TaskType]} {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+           <h3 className="text-lg font-semibold mb-3 text-muted-foreground">Filter by Status</h3>
+           <div className="flex flex-wrap gap-2">
+             {['pending', 'completed', 'missed', 'snoozed'].map(status => (
+               <button
+                 key={status}
+                 onClick={() => toggleTaskStatus(status as TaskStatus)}
+                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border
+                   ${selectedStatus.includes(status as TaskStatus)
+                     ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                     : 'bg-secondary text-secondary-foreground border-border hover:bg-secondary/80'
+                   }`}
+               >
+                 {getStatusIcon(status as TaskStatus)}{' '}
+                 {status.charAt(0).toUpperCase() + status.slice(1)}
+               </button>
+             ))}
+           </div>
         </div>
       </div>
 
-      <div>
-         <h3 className="text-lg font-semibold mb-3">Filter by Status</h3>
-         <div className="flex flex-wrap gap-3">
-           {['pending', 'completed', 'missed', 'snoozed'].map(status => (
-             <button
-               key={status}
-               onClick={() => toggleTaskStatus(status as TaskStatus)}
-               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border
-                 ${selectedStatus.includes(status as TaskStatus)
-                   ? 'bg-primary text-primary-foreground border-primary'
-                   : 'bg-secondary text-secondary-foreground border-border hover:bg-secondary/80'
-                 }`}
-             >
-               {getStatusIcon(status as TaskStatus)}{' '}
-               {status.charAt(0).toUpperCase() + status.slice(1)}
-             </button>
-           ))}
-         </div>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-3">Today&apos;s Tasks</h3>
+      <div className="space-y-4 pt-4 border-t border-border">
         <div className="space-y-3">
           {filteredTasks.length === 0 ? (
             <p className="text-center text-muted-foreground py-6">No tasks matching filters! 🎉</p>
@@ -146,15 +149,15 @@ export default function TodayTasks() {
             filteredTasks.map(task => (
               <div
                 key={task.id}
-                className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-colors
-                  ${task.status === 'completed' ? 'bg-green-100/20 border border-green-500/30' :
-                    task.status === 'missed' ? 'bg-red-100/20 border border-red-500/30' :
-                    task.status === 'snoozed' ? 'bg-yellow-100/20 border border-yellow-500/30' :
-                    'bg-card border border-border hover:bg-accent/50'
+                className={`flex items-center justify-between p-4 rounded-lg transition-colors border
+                  ${task.status === 'completed' ? 'bg-green-100/20 border-green-500/30' :
+                    task.status === 'missed' ? 'bg-red-100/20 border-red-500/30' :
+                    task.status === 'snoozed' ? 'bg-yellow-100/20 border-yellow-500/30' :
+                    'bg-secondary border-border hover:bg-accent/50'
                   }`}
               >
                 <div className="flex items-center space-x-4">
-                  <span className="text-3xl flex-shrink-0">{taskTypeIcons[task.taskType]}</span>
+                  <span className="text-3xl flex-shrink-0 text-primary">{taskTypeIcons[task.taskType]}</span>
                   <div className="flex-grow">
                     <h4 className="font-semibold text-lg">{task.plantName}</h4>
                     <p className="text-sm text-muted-foreground">
@@ -172,11 +175,12 @@ export default function TodayTasks() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end space-y-2 flex-shrink-0">
-                   <span className={`text-sm font-medium ${task.status === 'completed' ? 'text-green-600' : task.status === 'missed' ? 'text-red-600' : task.status === 'snoozed' ? 'text-yellow-600' : 'text-blue-600'}`}>
+                   <span className={`text-sm font-medium flex items-center gap-1
+                     ${task.status === 'completed' ? 'text-green-600' : task.status === 'missed' ? 'text-red-600' : task.status === 'snoozed' ? 'text-yellow-600' : 'text-blue-600'}`}>
                     {getStatusIcon(task.status)} {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                    </span>
                    {task.status === 'pending' || task.status === 'missed' || task.status === 'snoozed' ? (
-                     <div className="flex gap-2">
+                     <div className="flex gap-2 mt-2">
                        <button
                          onClick={() => handleTaskComplete(task.id)}
                          className="px-3 py-1 bg-green-500 text-white rounded-md text-sm hover:bg-green-600 transition-colors"
@@ -191,7 +195,7 @@ export default function TodayTasks() {
                        </button>
                      </div>
                    ) : task.status === 'completed' && task.completedAt ? (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground mt-2">
                          Completed: {format(new Date(task.completedAt), 'MMM dd, hh:mm a')}
                       </p>
                    ) : null}

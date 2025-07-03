@@ -5,13 +5,52 @@ import { Progress } from '@/components/ui/progress';
 import { Calendar } from '@/components/ui/calendar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlantRecommendation } from '@/lib/ai/plantRecommender';
-import { Calendar as CalendarIcon, CheckCircle2, Clock, Droplet, Sun } from 'lucide-react';
+import { Calendar as CalendarIcon, CheckCircle2, Clock, Droplet, Sun, Trash2, Edit2, Copy, Download } from 'lucide-react';
+import type { GrowPlan } from '@/lib/services/growPlanService';
 
 interface MyGrowPlanProps {
   savedPlants: PlantRecommendation[];
+  selectedPlan: GrowPlan | null;
+  onSelectPlan: (plan: GrowPlan | null) => void;
+  onSavePlan: () => Promise<void>;
+  onDeletePlan: (plan: GrowPlan) => Promise<void>;
+  onDuplicatePlan: (plan: GrowPlan) => Promise<void>;
+  onExportPlan: (plan: GrowPlan) => Promise<void>;
+  onEditPlan: (plan: GrowPlan) => void;
+  onNewPlan: () => void;
+  planName: string;
+  setPlanName: (name: string) => void;
+  planDescription: string;
+  setPlanDescription: (description: string) => void;
+  planNotes: string;
+  setPlanNotes: (notes: string) => void;
+  isPublic: boolean;
+  setIsPublic: (isPublic: boolean) => void;
+  isEditing: boolean;
+  shareUrl: string | null;
 }
 
-const MyGrowPlan: React.FC<MyGrowPlanProps> = ({ savedPlants }) => {
+const MyGrowPlan: React.FC<MyGrowPlanProps> = ({
+  savedPlants,
+  selectedPlan,
+  onSelectPlan,
+  onSavePlan,
+  onDeletePlan,
+  onDuplicatePlan,
+  onExportPlan,
+  onEditPlan,
+  onNewPlan,
+  planName,
+  setPlanName,
+  planDescription,
+  setPlanDescription,
+  planNotes,
+  setPlanNotes,
+  isPublic,
+  setIsPublic,
+  isEditing,
+  shareUrl
+}) => {
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date());
 
   // Mock tasks data - in a real app, this would come from a backend
@@ -29,10 +68,15 @@ const MyGrowPlan: React.FC<MyGrowPlanProps> = ({ savedPlants }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">My Grow Plan</h2>
-        <Button variant="outline">
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          Add to Calendar
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onNewPlan}>
+            New Plan
+          </Button>
+          <Button variant="outline">
+            <CalendarIcon className="w-4 h-4 mr-2" />
+            Add to Calendar
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="plants" className="space-y-4">
@@ -95,17 +139,41 @@ const MyGrowPlan: React.FC<MyGrowPlanProps> = ({ savedPlants }) => {
           ))}
         </TabsContent>
 
-        <TabsContent value="calendar">
-          <Card className="p-4">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              className="rounded-md border"
-            />
-          </Card>
+        <TabsContent value="calendar" className="space-y-4">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
+            className="rounded-md border"
+          />
         </TabsContent>
       </Tabs>
+
+      {selectedPlan && (
+        <div className="mt-6 space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Plan Actions</h3>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => onEditPlan(selectedPlan)}>
+                <Edit2 className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onDuplicatePlan(selectedPlan)}>
+                <Copy className="w-4 h-4 mr-2" />
+                Duplicate
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onExportPlan(selectedPlan)}>
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+              <Button variant="destructive" size="sm" onClick={() => onDeletePlan(selectedPlan)}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

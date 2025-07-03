@@ -7,6 +7,7 @@ import { GrowTask, TaskType } from '@/types/calendar';
 import { TaskService } from '@/lib/services/taskService';
 import { useToast } from '@/components/ui/use-toast';
 import styles from './GrowCalendar.module.css';
+import { format } from 'date-fns';
 
 // Define colors using CSS variables from the module
 const taskTypeColors: Record<TaskType, string> = {
@@ -31,10 +32,19 @@ export default function GrowCalendar() {
   const [tasks, setTasks] = useState<GrowTask[]>([]);
   const { toast } = useToast();
   const taskService = TaskService.getInstance();
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [calendarApi, setCalendarApi] = useState<any>(null);
 
   useEffect(() => {
     loadTasks();
   }, []);
+
+  useEffect(() => {
+    if (calendarApi) {
+      // FullCalendar months are 0-indexed, same as JavaScript Date
+      calendarApi.gotoDate(new Date(new Date().getFullYear(), currentMonth, 1));
+    }
+  }, [currentMonth, calendarApi]);
 
   const loadTasks = () => {
     const allTasks = taskService.getTasks();
@@ -46,7 +56,7 @@ export default function GrowCalendar() {
     if (task) {
       toast({
         title: task.plantName,
-        description: (
+        children: (
           <div className="space-y-2">
             <p className="font-medium">{taskTypeIcons[task.taskType]} {task.taskType.charAt(0).toUpperCase() + task.taskType.slice(1)}</p>
             {task.notes && <p className="text-sm text-gray-600">{task.notes}</p>}
@@ -75,7 +85,7 @@ export default function GrowCalendar() {
     loadTasks();
     toast({
       title: 'Task Completed',
-      description: 'Great job! Keep up the good work! 🌱',
+      children: 'Great job! Keep up the good work! 🌱',
     });
   };
 
@@ -84,30 +94,26 @@ export default function GrowCalendar() {
     loadTasks();
     toast({
       title: 'Task Snoozed',
-      description: 'Task has been rescheduled for tomorrow.',
+      children: 'Task has been rescheduled for tomorrow.',
     });
   };
 
-  // Custom event content for branded chip look
-  const renderEventContent = (eventInfo: any) => {
-    const task: GrowTask = eventInfo.event.extendedProps.task;
+  // Custom event content for branded chip look - Hide this as we are using dayCellContent
+  // const renderEventContent = (eventInfo: any) => {
+  //   return null; // Return null to hide the default event rendering
+  // };
+
+  // Custom day cell rendering
+  const renderDayCellContent = (dayCellInfo: any) => {
+    const date = dayCellInfo.date;
+    const tasksOnDay = tasks.filter(task => format(new Date(task.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'));
+    const hasEvents = tasksOnDay.length > 0;
+    const isToday = format(dayCellInfo.date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+
     return (
-      <div
-        className="flex items-center gap-2 px-2 py-1 rounded-full shadow-sm text-white"
-        style={{
-          background: taskTypeColors[task.taskType],
-          // Using CSS variable for text color if defined, otherwise white
-          color: 'var(--ecogrow-text-dark, #fff)',
-          fontWeight: 600,
-          fontSize: '0.95em',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          width: '100%' // Ensure it takes full width in day grid
-        }}
-      >
-        <span className="text-base flex-shrink-0">{taskTypeIcons[task.taskType]}</span>
-        <span className="flex-grow overflow-hidden text-ellipsis">{task.plantName}</span>
+      <div className={`${styles.dayContent} ${hasEvents ? styles.hasEvent : ''} ${isToday ? styles.isToday : ''}`}> {/* Apply classes for styling */}
+        <div className={styles.dayNumber}>{dayCellInfo.dayNumberText}</div>
+        {hasEvents && <div className={styles.eventIcon}>🍁</div>} {/* Placeholder leaf icon */}
       </div>
     );
   };
@@ -127,17 +133,34 @@ export default function GrowCalendar() {
 
   return (
     <div className={styles.ecogrowCalendarRoot}> {/* Apply root styling */}
+      <div className={styles.monthNavigation}> {/* New month navigation container */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(monthIndex => {
+          const monthName = new Date(new Date().getFullYear(), monthIndex).toLocaleString('default', { month: 'short' });
+          const isCurrentMonth = monthIndex === currentMonth;
+          return (
+            <button
+              key={monthIndex}
+              className={`${styles.monthButton} ${isCurrentMonth ? styles.currentMonth : ''}`}
+              onClick={() => setCurrentMonth(monthIndex)}
+            >
+              {monthName}
+            </button>
+          );
+        })}
+      </div>
+
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          right: '' // Remove view buttons
         }}
         events={events}
         eventClick={handleEventClick}
-        eventContent={renderEventContent}
+        // eventContent={renderEventContent} // Remove eventContent
+        dayCellContent={renderDayCellContent} // Use dayCellContent for custom rendering
         height="auto"
         eventTimeFormat={{
           hour: 'numeric',
@@ -145,15 +168,21 @@ export default function GrowCalendar() {
           meridiem: 'short',
         }}
         dayMaxEvents={true}
-        nowIndicator={true}
+        nowIndicator={false} // Hide default today indicator
         selectable={true}
         selectMirror={true}
         weekends={true}
         editable={true}
         droppable={true}
         // Add classNames to root elements for easier CSS targeting if needed
-        dayCellClassNames={styles.ecogrowDayCell}
+        dayCellClassNames={styles.ecogrowDayCell} // Keep day cell class for general styling
         eventClassNames={styles.ecogrowEvent}
+        dayHeaderClassNames={styles.ecogrowDayHeader} // Add class for weekday headers
+        ref={calendarRef => {
+          if (calendarRef) {
+            setCalendarApi(calendarRef.getApi());
+          }
+        }}
       />
     </div>
   );

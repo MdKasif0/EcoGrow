@@ -54,21 +54,40 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
 
   // TODO: Handle cases where journal or timeline are null
 
+  // Get plant name, image, and created date from the first journal entry if available
+  const firstEntry = journal?.entries?.[0];
+  const plantName = firstEntry?.plant_name || journal?.plant_nickname || plantId;
+  const plantImage = firstEntry?.photos?.[0]?.url || '/og-image.jpg';
+  const createdAt = firstEntry?.date || undefined;
+
   const pageData = {
     ...articleData,
-    headline: `${journal?.plant_name || plantId} Growth Timeline`,
-    description: `Track the growth journey of your ${journal?.plant_name || plantId} from seed to harvest with our interactive timeline visualization.`,
-    image: journal?.image || '/og-image.jpg',
-    datePublished: journal?.createdAt,
+    headline: `${plantName} Growth Timeline`,
+    description: `Track the growth journey of your ${plantName} from seed to harvest with our interactive timeline visualization.`,
+    image: plantImage,
+    datePublished: createdAt,
     dateModified: new Date().toISOString(),
   };
 
   return (
     <>
       <DynamicMetaTags
-        title={`${journal?.plant_name || plantId} Growth Timeline`}
-        description={`Track the growth journey of your ${journal?.plant_name || plantId} from seed to harvest with our interactive timeline visualization.`}
-        keywords={['plant growth', 'garden management', 'plant tracking', 'growing guide', 'plant journal', 'garden calendar', 'plant care', 'harvest tracking', (journal?.plant_name || plantId), 'timeline', 'growth stages', 'plant tracking']}
+        title={`${plantName} Growth Timeline`}
+        description={`Track the growth journey of your ${plantName} from seed to harvest with our interactive timeline visualization.`}
+        keywords={[
+          'plant growth',
+          'garden management',
+          'plant tracking',
+          'growing guide',
+          'plant journal',
+          'garden calendar',
+          'plant care',
+          'harvest tracking',
+          plantName,
+          'timeline',
+          'growth stages',
+          'plant tracking',
+        ]}
         ogType="article"
         canonicalUrl={`https://eco-grow.netlify.app/timeline/${params.slug}`}
       />
@@ -76,30 +95,30 @@ export default function PlantTimelinePage({ params }: PlantTimelinePageProps) {
       <div className="container mx-auto py-8 px-4">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" size="icon" onClick={() => router.back()}>
-             <ArrowLeft className="h-6 w-6" />
+            <ArrowLeft className="h-6 w-6" />
           </Button>
-           <h1 className="text-3xl font-bold">Timeline for {journal?.plant_name || plantId}</h1>
+          <h1 className="text-3xl font-bold">Timeline for {plantName}</h1>
         </div>
-
         {/* Render the timeline component or a message */}
         {timeline ? (
-          <PlantTimelineComponent timeline={timeline} journal={journal} tasks={tasks} /> {/* Pass journal and tasks */}
-        ) : (journal && !journal.planting_date ? (
-            <p className="text-lg text-muted-foreground text-center">Planting date is required to generate the timeline. Please add a journal entry with a planting date.</p>
+          <PlantTimelineComponent timeline={timeline} journal={journal} tasks={tasks} />
+        ) : journal && !journal.planting_date ? (
+          <p className="text-lg text-muted-foreground text-center">
+            Planting date is required to generate the timeline. Please add a journal entry with a planting date.
+          </p>
         ) : (
-             <p className="text-lg text-muted-foreground text-center">Loading timeline data or journal not found...</p>
-        ))
-        }
-
-         {/* TODO: Add a link or button to add a journal entry if needed */}
-          {journal && !journal.planting_date && (
-              <div className="text-center mt-6">
-                   <Link href={`/journal/${plantId}`} passHref>
-                        <Button>Add First Journal Entry (with Planting Date)</Button>
-                   </Link>
-              </div>
-          )}
-
+          <p className="text-lg text-muted-foreground text-center">
+            Loading timeline data or journal not found...
+          </p>
+        )}
+        {/* TODO: Add a link or button to add a journal entry if needed */}
+        {journal && !journal.planting_date && (
+          <div className="text-center mt-6">
+            <Link href={`/journal/${plantId}`} passHref>
+              <Button>Add First Journal Entry (with Planting Date)</Button>
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );

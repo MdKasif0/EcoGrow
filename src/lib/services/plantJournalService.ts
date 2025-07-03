@@ -39,6 +39,10 @@ export class PlantJournalService {
     return this.journals[plantId];
   }
 
+  public getAllJournals(): PlantJournal[] {
+    return Object.values(this.journals);
+  }
+
   public getJournalEntry(plantId: string, entryId: string): PlantJournalEntry | undefined {
     const journal = this.getJournal(plantId);
     return journal?.entries.find(entry => entry.entry_id === entryId);

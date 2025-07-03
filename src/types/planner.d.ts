@@ -1,15 +1,19 @@
 export interface PlannerData {
   userId: string;
   location: {
-    lat: number | null; // Allow null if not available initially
-    lon: number | null; // Allow null if not available initially
-    address?: string; // Address might be optional if using lat/lon primarily
+    lat?: number;
+    lng?: number;
+    address?: string;
+    zipCode: string;
     climateZone: string;
   };
-  space: string; // e.g., "balcony", "garden", "indoor"
+  space: string; // e.g., "indoor", "balcony", "small_yard", "large_garden", "greenhouse"
+  spaceSize: string; // e.g., "100"
   sunlight: string; // e.g., "full", "partial", "shade"
-  purpose: string[]; // e.g., ["herbs", "vegetables", "flowers"]
-  experience: string; // e.g., "beginner", "intermediate", "expert"
-  timeCommitment: string; // e.g., "low", "medium", "high"
+  purpose: string; // e.g., "food", "ornamental", "medicinal", "mixed"
+  experience: string; // e.g., "beginner", "intermediate", "advanced"
+  timeCommitment: string; // e.g., "Minimal", "Low", "Moderate", "High", "Very High"
+  automation: string; // e.g., "manual", "some_automation", "full_automation"
+  plantTypes: string[]; // e.g., ["vegetables", "herbs"]
   createdAt: string; // ISO date string
 }

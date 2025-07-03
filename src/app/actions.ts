@@ -6,6 +6,9 @@ import { generateRecipes, GenerateRecipesOutput } from '@/ai/flows/generate-reci
 import { generateAgriTip } from '@/ai/flows/generate-agri-tip-flow';
 import { chatWithAgriBot, ChatInput, ChatOutput, ChatMessage } from '@/ai/flows/chat-flow'; // Added chat imports
 
+// Import necessary components from google-generative-ai
+import { GoogleGenerativeAI, GenerativeModel, ChatSession, Content } from '@google/generative-ai';
+
 interface ProcessImageResult {
   success: boolean;
   message?: string;
@@ -89,20 +92,46 @@ export async function sendChatMessage(message: string, history?: ChatMessage[]):
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey || apiKey === 'YOUR_GEMINI_API_KEY_HERE' || apiKey.trim() === '') {
     console.warn("GOOGLE_API_KEY is not set or is a placeholder for chat. Chatbot will likely fail.");
-    return "I'm sorry, but I'm unable to process requests at the moment due to a configuration issue. Please try again later.";
+    return "I'm sorry, but I'm unable to process requests at the moment due to a configuration issue. Please ensure your GOOGLE_API_KEY is set correctly.";
   }
 
   if (!message.trim()) {
     return "Please provide a message.";
   }
 
-  const input: ChatInput = { message, history };
-
   try {
-    const result: ChatOutput = await chatWithAgriBot(input);
-    return result.response;
+    // Initialize the Generative AI model
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // Use a model that supports chat, like gemini-pro
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+
+    // Prepare chat history for the model
+    const historyForModel: Content[] = history ? history.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model', // Map roles to Gemini format
+      parts: [{ text: msg.content }],
+    })) : [];
+
+    // Start a chat session
+    const chat: ChatSession = model.startChat({
+      history: historyForModel,
+      // Add any other necessary parameters like generationConfig or safetySettings here
+    });
+
+    // Send the user's message
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    const text = response.text();
+
+    if (!text) {
+      console.warn("Gemini API returned an empty response.");
+      return "I received an empty response from the AI. Please try asking something else.";
+    }
+
+    return text; // Return the AI's text response
+
   } catch (error) {
-    console.error('Error in sendChatMessage action calling chatWithAgriBot:', error);
-    return "I'm having trouble connecting right now. Please try again in a moment.";
+    console.error('Error interacting with Gemini API:', error);
+    // Provide a more user-friendly error message
+    return "I'm having trouble communicating with the AI right now. Please try again in a moment.";
   }
 }

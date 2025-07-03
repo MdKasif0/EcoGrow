@@ -32,73 +32,191 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Calendar header */
-.fc .fc-toolbar-title {
-  color: var(--ecogrow-primary-dark);
-  font-family: 'Playfair Display', serif; /* Match app title font */
+/* New styles for month navigation */
+.monthNavigation {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* Adjust gap as needed */
+  margin-bottom: 1.5rem;
+  background-color: var(--ecogrow-surface-dark); /* Use surface color for background */
+  padding: 0.5rem 1rem; /* Adjust padding */
+  border-radius: 2rem; /* Pill shape for the container */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.monthButton {
+  background: none;
+  border: none;
+  color: var(--ecogrow-text-muted-dark); /* Muted text color */
+  font-size: 1rem; /* Adjust font size */
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.3rem 0.8rem; /* Adjust padding */
+  border-radius: 1.5rem; /* Pill shape for buttons */
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  text-transform: uppercase; /* Uppercase month names */
+}
+
+.monthButton:hover {
+  color: var(--ecogrow-text-dark); /* Darker text on hover */
+}
+
+.currentMonth {
+  background-color: var(--ecogrow-accent-dark); /* Accent color for highlight */
+  color: var(--ecogrow-bg-dark); /* Dark text for contrast on accent background */
   font-weight: 700;
-  font-size: 1.875rem; /* text-3xl */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2); /* More prominent shadow for active state */
+}
+
+/* Calendar header (Title) */
+.fc .fc-toolbar-title {
+  color: var(--ecogrow-text-dark); /* Use text-dark color for the title */
+  font-family: 'Playfair Display', serif; /* Use the specified font */
+  font-weight: 700; /* Bold font */
+  font-size: 1.875rem; /* Adjust font size as needed */
+  text-align: center; /* Center the title */
+  flex-grow: 1; /* Allow title to take space */
+  margin: 0 auto; /* Center the title */
+}
+
+/* Adjust FullCalendar header toolbar for spacing and alignment */
+.fc .fc-header-toolbar {
+  margin-bottom: 1em; /* Space below the header/title */
+  align-items: center; /* Vertically align items */
+  flex-wrap: wrap; /* Allow wrapping */
+}
+
+.fc .fc-toolbar-chunk {
+  display: flex; /* Use flexbox for chunks */
+  align-items: center; /* Vertically align items within chunks */
+}
+
+.fc .fc-toolbar-chunk:first-child { /* Left chunk (prev, next, today) */
+  order: 1; /* Order to match image layout */
+  /* flex-grow: 1; */ /* Adjust flex-grow as needed */
+  justify-content: flex-start; /* Align items to the start */
+}
+
+.fc .fc-toolbar-chunk:nth-child(2) { /* Center chunk (title) */
+  order: 2; /* Order to match image layout */
+  flex-grow: 1; /* Title takes center space */
+  justify-content: center; /* Center the title text */
+}
+
+.fc .fc-toolbar-chunk:last-child { /* Right chunk (views) */
+  order: 3; /* Order to match image layout */
+  /* flex-grow: 1; */ /* Adjust flex-grow as needed */
+  justify-content: flex-end; /* Align items to the end */
+}
+
+.fc .fc-button-group {
+  display: flex; /* Use flexbox for button groups */
+  gap: 0.5rem; /* Space between buttons */
 }
 
 .fc .fc-button {
-  background: var(--ecogrow-surface-dark);
-  border: 1px solid var(--ecogrow-border-dark);
-  color: var(--ecogrow-primary-dark);
-  border-radius: 0.5rem;
+  background: var(--ecogrow-surface-dark); /* Use surface color */
+  border: 1px solid var(--ecogrow-border-dark); /* Border color */
+  color: var(--ecogrow-primary-dark); /* Primary color for text/icon */
+  border-radius: 0.5rem; /* Rounded corners */
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  padding: 0.3rem 0.6rem; /* Adjust padding */
+  transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .fc .fc-button:hover, .fc .fc-button:focus {
-  background: var(--ecogrow-border-dark);
-  border-color: var(--ecogrow-primary-dark);
+  background: var(--ecogrow-border-dark); /* Hover background */
+  border-color: var(--ecogrow-primary-dark); /* Hover border */
+  color: var(--ecogrow-primary-dark); /* Keep text color */
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active, 
 .fc .fc-button-primary:not(:disabled):active {
-  background: var(--ecogrow-primary-dark);
-  color: var(--ecogrow-bg-dark);
-  border-color: var(--ecogrow-primary-dark);
+  background: var(--ecogrow-primary-dark); /* Active background */
+  color: var(--ecogrow-bg-dark); /* Dark text for active state */
+  border-color: var(--ecogrow-primary-dark); /* Active border */
+}
+
+/* Calendar grid container */
+.fc .fc-view-harness {
+  border: none; /* Remove border around the grid */
+}
+
+.fc .fc-scrollgrid {
+  border: none; /* Remove scrollgrid borders */
+}
+
+.fc .fc-scrollgrid table {
+  border: none; /* Remove table borders */
 }
 
 /* Calendar grid */
 .fc .fc-daygrid-day {
-  background: var(--ecogrow-surface-dark);
-  border: 1px solid var(--ecogrow-border-dark);
-  border-radius: 0.5rem;
+  background: none; /* No background for individual cells */
+  border: none; /* Remove default borders */
+  border-radius: 0; /* No border radius */
   transition: background 0.2s ease-in-out;
+  padding: 0; /* Remove padding */
+  text-align: center; /* Center content */
+  height: 50px; /* Fixed height for consistent grid */
+  display: flex; /* Use flexbox for centering number and icon */
+  flex-direction: column; /* Stack number and icon */
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  position: relative; /* Needed for absolute positioning of circle/icon */
 }
 
-.fc .fc-daygrid-day-number {
-  color: var(--ecogrow-text-dark);
+/* Custom day content container */
+.dayContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.dayNumber {
+  color: var(--ecogrow-text-dark); /* Dark text color */
   font-weight: 500;
-  padding: 0.5rem;
+  font-size: 1rem; /* Adjust font size */
+  z-index: 1; /* Ensure number is above the circle */
 }
 
-.fc .fc-daygrid-day.fc-day-today {
-  background: var(--ecogrow-primary-dark);
-  color: var(--ecogrow-bg-dark);
-}
-
-.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-  color: var(--ecogrow-bg-dark);
+.fc .fc-daygrid-day.fc-day-today .dayNumber {
+  color: var(--ecogrow-primary-dark); /* Primary color for today's number */
   font-weight: 700;
 }
 
 .fc .fc-daygrid-day:hover {
-  background: var(--ecogrow-border-dark);
+  background-color: rgba(var(--ecogrow-border-dark-rgb), 0.5); /* Subtle hover effect using RGB for transparency */
 }
 
+/* Style for days with events - circle and icon */
+.hasEvent::after { /* Use ::after for the circle */
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; /* Size of the circle */
+  height: 40px;
+  border: 2px solid var(--ecogrow-accent-dark); /* Accent color for the circle */
+  border-radius: 50%;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: 0; /* Ensure circle is below the number and icon */
+}
+
+.eventIcon {
+  font-size: 1.2rem; /* Adjust icon size */
+  margin-top: 0.2rem; /* Space between number and icon */
+  z-index: 1; /* Ensure icon is above the circle */
+}
+
+/* Hide default event chips */
 .fc .fc-daygrid-event {
-  margin: 1px 0;
-}
-
-/* Event chips */
-/* Styling handled in component for better dynamic colors */
-.fc .fc-event {
-  border: none !important; /* Override default FullCalendar border */
-  background: none !important; /* Override default FullCalendar background */
+  display: none; /* Hide the default event chips */
 }
 
 /* Hide default event dot */
@@ -108,29 +226,38 @@
 
 /* Weekday headers */
 .fc .fc-col-header-cell {
-  background: var(--ecogrow-surface-dark);
-  border: 1px solid var(--ecogrow-border-dark);
-  border-bottom: none;
+  background: none; /* No background */
+  border: none; /* Remove borders */
+  border-bottom: 1px solid var(--ecogrow-border-dark); /* Bottom border */
+  padding: 0.5rem 0; /* Adjust padding */
 }
 
 .fc .fc-col-header-cell-cushion {
-  color: var(--ecogrow-text-muted-dark);
+  color: var(--ecogrow-text-muted-dark); /* Muted text color */
   font-weight: 600;
-  padding: 0.75rem 0;
+  padding: 0;
+  font-size: 0.9rem; /* Adjust font size */
+  text-transform: uppercase; /* Uppercase weekday names */
 }
 
-/* Time grid views */
-.fc .fc-timegrid-slot {
-  border-bottom: 1px dashed var(--ecogrow-border-dark);
+/* Time grid views - hide them as the image only shows month view */
+.fc .fc-timegrid-slot, .fc .fc-timegrid-col, .fc .fc-timegrid {
+  display: none !important;
 }
 
-.fc .fc-timegrid-slot-label {
-  color: var(--ecogrow-text-muted-dark);
-  font-size: 0.875rem; /* text-sm */
+/* Ensure the main calendar table does not have borders */
+.fc .fc-theme-standard th,
+.fc .fc-theme-standard td {
+  border: none;
 }
 
-.fc .fc-timegrid-col {
-  border-left: 1px solid var(--ecogrow-border-dark);
+/* Adjust day cell content area to take full height */
+/* This might not be needed with dayCellContent, but keeping for safety */
+.fc .fc-daygrid-day-events {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 /* Responsiveness */
@@ -139,33 +266,40 @@
     padding: 1rem;
   }
 
-  .fc .fc-toolbar {
-    flex-direction: column;
-    gap: 1rem;
+  .monthNavigation {
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .monthButton {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.6rem;
   }
 
   .fc .fc-toolbar-title {
     font-size: 1.5rem; /* text-2xl */
-    text-align: center;
   }
 
-  .fc .fc-button-group {
-    flex-direction: column;
-    gap: 0.5rem;
+  /* Adjust day cell size and font */
+  .fc .fc-daygrid-day {
+    height: 45px;
   }
 
-  .fc .fc-button {
-    width: 100%;
-    text-align: center;
+  .dayNumber {
+    font-size: 0.9rem;
   }
 
-  .fc .fc-daygrid-day-number {
-    padding: 0.25rem;
-    font-size: 0.875rem; /* text-sm */
+  .fc .fc-col-header-cell-cushion {
+    font-size: 0.8rem;
   }
 
-  .fc .fc-event {
-    font-size: 0.875em;
+  .hasEvent::after {
+    width: 35px;
+    height: 35px;
+  }
+
+  .eventIcon {
+    font-size: 1rem;
   }
 }
 
@@ -174,20 +308,39 @@
     padding: 0.75rem;
   }
 
+  .monthNavigation {
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .monthButton {
+    font-size: 0.8rem;
+    padding: 0.1rem 0.4rem;
+  }
+
   .fc .fc-toolbar-title {
     font-size: 1.25rem; /* text-xl */
   }
 
-  .fc .fc-daygrid-day-number {
-    font-size: 0.75rem; /* text-xs */
+  /* Adjust day cell size and font */
+  .fc .fc-daygrid-day {
+    height: 40px;
+  }
+
+  .dayNumber {
+    font-size: 0.8rem;
   }
 
   .fc .fc-col-header-cell-cushion {
-    font-size: 0.875rem; /* text-sm */
+    font-size: 0.7rem;
   }
 
-  .fc .fc-event {
-    padding: 1px 6px;
-    font-size: 0.8em;
+  .hasEvent::after {
+    width: 30px;
+    height: 30px;
+  }
+
+  .eventIcon {
+    font-size: 0.9rem;
   }
 } 
