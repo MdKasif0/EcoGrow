@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Leaf, Globe, Languages, MapPin, Activity, Heart, AlertTriangle, Sprout, CalendarDays, Info, WifiOff, MessageCircleWarning,
   CalendarCheck2, CalendarX2, Store, LocateFixed, Share2, ArrowLeft, Recycle,
-  History, Thermometer, CloudRain, Mountain, Layers, Waves, Droplets, CalendarCog, Bug, ShieldAlert, Truck, Archive, MapPinned, AreaChart, TrendingUp, FlaskConical, TestTubeDiagonal, NotebookPen, Newspaper
+  Thermometer, CloudRain, Mountain, Layers, Waves, Droplets, CalendarCog, Bug, ShieldAlert, Truck, Archive, MapPinned, AreaChart, TrendingUp, FlaskConical, TestTubeDiagonal, NotebookPen, Newspaper
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
@@ -470,15 +470,15 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
 
             {/* New Agricultural Information Fields Start Here */}
 
-            {produce.uses && produce.uses.length > 0 && (
+            {/* {produce.uses && produce.uses.length > 0 && (
               <IconLabel icon={Leaf} label="Common Uses" className="bg-card rounded-lg shadow-lg">
                 <div className="flex flex-wrap gap-2">
                   {produce.uses.map(use => <Badge key={use} variant="outline" className="bg-muted hover:bg-muted/80 text-muted-foreground">{use}</Badge>)}
                 </div>
               </IconLabel>
-            )}
+            )} */}
 
-            {produce.originAndDomesticationHistory && (
+            {/* {produce.originAndDomesticationHistory && (
               <IconLabel icon={History} label="Origin & Domestication History" className="bg-card rounded-lg shadow-lg">
                 <p className="text-card-foreground/90 whitespace-pre-line">{produce.originAndDomesticationHistory}</p>
               </IconLabel>
@@ -534,11 +534,11 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
               <IconLabel icon={AreaChart} label="Market Value & Global Demand" className="bg-card rounded-lg shadow-lg">
                 <p className="text-card-foreground/90 whitespace-pre-line">{produce.marketValueAndGlobalDemand}</p>
               </IconLabel>
-            )}
+            )} */}
 
             {/* New Agricultural Information Fields End Here */}
 
-            <IconLabel icon={FlaskConical} label="Soil Suitability Checker (Future AI Feature)" className="bg-card rounded-lg shadow-lg">
+            {/* <IconLabel icon={FlaskConical} label="Soil Suitability Checker (Future AI Feature)" className="bg-card rounded-lg shadow-lg">
               {produce.soilPreferences && produce.soilPreferences.trim() !== "" ? (
                 <p className="text-card-foreground/90 mb-2">
                   This plant's general soil preferences: <span className="italic">{produce.soilPreferences}</span>
@@ -551,7 +551,7 @@ export default function ItemDetailsPage({ slugFromParams: slugFromParamsProp }: 
               <p className="text-sm text-muted-foreground">
                 An advanced AI-powered Soil Suitability Checker is coming soon! This feature will allow you to input your local soil and climate conditions for a detailed suitability analysis for this plant.
               </p>
-            </IconLabel>
+            </IconLabel> */}
 
             <IconLabel icon={TestTubeDiagonal} label="Fertilizer & Treatment Guide (Coming Soon)" className="bg-card rounded-lg shadow-lg">
               <p className="text-sm text-muted-foreground">
