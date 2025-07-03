@@ -38,10 +38,8 @@ describe('PurposeStep', () => {
     const vegetablesButton = screen.getByText('Vegetables').closest('button');
     const herbsButton = screen.getByText('Herbs').closest('button');
 
-    expect(vegetablesButton).toBeInTheDocument();
-    if (vegetablesButton) fireEvent.click(vegetablesButton);
-    expect(herbsButton).toBeInTheDocument();
-    if (herbsButton) fireEvent.click(herbsButton);
+    fireEvent.click(vegetablesButton);
+    fireEvent.click(herbsButton);
 
     // Check selection styling (example for one button)
     expect(vegetablesButton).toHaveClass('ring-blue-500');
@@ -55,15 +53,14 @@ describe('PurposeStep', () => {
   it('allows deselecting an option', () => {
     render(<PurposeStep onNext={mockOnNext} onBack={mockOnBack} data={{}} />);
     const vegetablesButton = screen.getByText('Vegetables').closest('button');
-    expect(vegetablesButton).toBeInTheDocument();
 
     // Select
-    if (vegetablesButton) fireEvent.click(vegetablesButton);
+    fireEvent.click(vegetablesButton);
     expect(vegetablesButton).toHaveClass('ring-blue-500');
     expect(screen.getByRole('button', { name: /Next/i })).not.toBeDisabled();
 
     // Deselect
-    if (vegetablesButton) fireEvent.click(vegetablesButton);
+    fireEvent.click(vegetablesButton);
     expect(vegetablesButton).not.toHaveClass('ring-blue-500');
     expect(screen.getByRole('button', { name: /Next/i })).toBeDisabled(); // Assuming it becomes disabled if empty
 

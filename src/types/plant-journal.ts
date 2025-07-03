@@ -65,7 +65,6 @@ export interface GrowthStage {
   toolsNeeded?: string[];
   tips?: string[];
   warnings?: string[];
-  trivia?: string[];
 }
 
 export interface GrowingGuide {

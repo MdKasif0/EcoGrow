@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import { ChevronDown, CheckCircle2, AlertCircle, Lightbulb, Info, AlertTriangle } from 'lucide-react';
+import { ChevronDown, CheckCircle2, AlertCircle, Lightbulb, Info } from 'lucide-react';
 import { GrowingGuide as GrowingGuideType, GrowthStage } from '@/types/plant-journal'; // Corrected import
 import { useToast } from '@/hooks/use-toast'; // Corrected import
 import { Button } from '@/components/ui/button';
@@ -102,7 +101,7 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                     <div className="space-y-2">
                       <h4 className="font-medium">Instructions</h4>
                       <ul className="list-disc list-inside space-y-1">
-                        {(stage.instructions || []).map((instruction, i) => (
+                        {stage.instructions.map((instruction, i) => (
                           <li key={i} className="text-sm">{instruction}</li>
                         ))}
                       </ul>
@@ -135,12 +134,13 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                             <span>{warning}</span>
                           </div>
                         ))}
-                        {stage.trivia?.map((triviaItem, i) => (
+                        {/* Trivia not in GrowthStage from plant-journal.ts, remove or add to type
+                        {stage.trivia?.map((trivia, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-blue-500">
                             <Info className="h-4 w-4 mt-1" />
-                            <span>{triviaItem}</span>
+                            <span>{trivia}</span>
                           </div>
-                        ))}
+                        ))} */}
                       </div>
                     )}
 
@@ -150,13 +150,12 @@ export const GrowingGuide: React.FC<GrowingGuideProps> = ({
                         <h4 className="font-medium">Visual Guide</h4>
                           <div className="grid grid-cols-2 gap-2">
                             {stage.media.map((mediaItem, i) => (
-                              <div key={i} className="aspect-video bg-muted rounded-lg overflow-hidden relative">
+                              <div key={i} className="aspect-video bg-muted rounded-lg overflow-hidden">
                                 {mediaItem.type === 'image' ? (
-                                  <Image
+                                  <img
                                     src={mediaItem.url}
                                     alt={mediaItem.alt || `${stage.name} media ${i + 1}`}
-                                    layout="fill"
-                                    objectFit="cover"
+                                    className="w-full h-full object-cover"
                                   />
                                 ) : (
                                   <video

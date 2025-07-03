@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,11 +27,10 @@ const PlantCard: React.FC<PlantCardProps> = ({
     >
       <Card className="w-full overflow-hidden hover:shadow-lg transition-shadow">
         <div className="relative h-48 w-full">
-          <Image
-            src={plant.imageUrl || ''}
+          <img
+            src={plant.imageUrl}
             alt={plant.name}
-            layout="fill"
-            objectFit="cover"
+            className="w-full h-full object-cover"
           />
           <div className="absolute top-2 right-2 flex gap-2">
             {plant.tags.map((tag) => (

@@ -5,8 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { PlantJournalService } from '@/lib/services/plantJournalService';
 import { PlantJournal, PlantJournalEntry, GrowingGuide, GrowthStage, Mood, HealthStatus, JournalPhoto, TaskSummary } from '@/types/plant-journal';
 import { ArrowLeft, Camera, Leaf, Smile, Frown, HeartPulse, Droplets, Sprout, Sun, Thermometer, Wind, ChevronDown, ChevronUp, PlusCircle } from 'lucide-react';
-import Image from 'next/image';
-import { growingGuideService } from '@/lib/services/growingGuideService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format, parseISO, differenceInDays, isValid } from 'date-fns';
@@ -51,6 +49,36 @@ const getTaskIcon = (taskType: string) => {
         case 'fertilize': return <Sprout className="h-4 w-4 text-green-500" />;
         // Add more task types as needed
         default: return null;
+    }
+};
+
+// Helper to fetch growing guide data (mock/placeholder)
+// In a real app, you might fetch this from a service or API
+const fetchGrowingGuide = async (plantId: string): Promise<GrowingGuide | undefined> => {
+    // Assuming guide files are named like [plantId].json in src/lib/data/growingGuides
+    try {
+        // This dynamic import won't work directly in client-side code for a static path,
+        // and fetch() won't work for local files. A realistic approach would be:
+        // 1. Have an API endpoint that reads the JSON file.
+        // 2. Import statically if the set of guides is known at build time.
+        // For now, let's simulate fetching.
+        // We'll need to map plantId to a specific guide file name.
+
+        // Example: Assuming a guide for 'cocoa_beveragecrop' exists as src/lib/data/growingGuides/cocoa_beveragecrop.json
+        const guidePath = `/api/growing-guides?plantId=${plantId}`;
+        const response = await fetch(guidePath);
+
+        if (!response.ok) {
+            console.error(`Failed to fetch growing guide for ${plantId}: ${response.statusText}`);
+            return undefined;
+        }
+
+        const guide: GrowingGuide = await response.json();
+        return guide;
+
+    } catch (error) {
+        console.error(`Error fetching growing guide for ${plantId}:`, error);
+        return undefined;
     }
 };
 
@@ -103,7 +131,7 @@ const getGrowthStageForDate = (date: string, plantingDate: string, guide?: Growi
                  const stageDuration = s.duration_days || 0;
                  const stageStartDays = cumulativeDays;
                  const stageEndDays = cumulativeDays + stageDuration;
-                  if (daysSincePlanting >= stageStartDays && daysSincePlanting < stageEndDays) {
+                 if (daysSincePlanting >= stageStartDays && daysSinceSincePlanting < stageEndDays) {
                      return s; // Found the stage
                  }
                  cumulativeDays += stageDuration;
@@ -133,9 +161,9 @@ export default function PlantJournalPage() {
       setJournal(fetchedJournal);
 
       // Fetch the growing guide when the plantId is available
-      const guide = growingGuideService.getGuide(plantId); setGrowingGuide(guide);
+      fetchGrowingGuide(plantId).then(setGrowingGuide);
     }
-  }, [plantId, showAddEntryForm, journalService]);
+  }, [plantId, showAddEntryForm]);
 
   const toggleExpandEntry = (entryId: string) => {
     setExpandedEntryId(expandedEntryId === entryId ? null : entryId);
@@ -149,8 +177,7 @@ export default function PlantJournalPage() {
           const updatedJournal = journalService.getJournal(plantId); // Get latest journal state
           if (updatedJournal && (!updatedJournal.planting_date || updatedJournal.entries.length === 0)) {
               const firstEntryDate = newEntryData.date;
-               // TODO: Fix journal update logic here
-               // journalService.updateJournal(plantId, { ...updatedJournal, planting_date: firstEntryDate });
+               journalService.updateJournal(plantId, { ...updatedJournal, planting_date: firstEntryDate });
           }
       }
 
@@ -198,7 +225,7 @@ export default function PlantJournalPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold font-serif">{plantName}&apos;s Journal</h1>
+          <h1 className="text-3xl font-bold font-serif">{plantName}'s Journal</h1>
            {!showAddEntryForm && journal && (
              <Button onClick={() => setShowAddEntryForm(true)} size="sm">
                <PlusCircle className="h-4 w-4 mr-2" />
@@ -216,7 +243,6 @@ export default function PlantJournalPage() {
                  onCancel={() => setShowAddEntryForm(false)}
                  plantingDate={journal?.planting_date}
                  growingGuide={growingGuide}
-                  tasks={[]}
               />
            </div>
         )}
@@ -298,15 +324,13 @@ export default function PlantJournalPage() {
                                         {entry.photos && entry.photos.length > 0 && (
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                                 {entry.photos.map(photo => (
-                                                    <div key={photo.id} className="relative w-full h-32 rounded-md shadow-sm overflow-hidden">
-                                                      <Image
-                                                          key={photo.id}
-                                                          src={photo.url} // This will be the Base64 string
-                                                          alt={photo.alt || 'Plant photo'}
-                                                          layout="fill"
-                                                          objectFit="cover"
-                                                      />
-                                                    </div>
+                                                    // Use img tag with Base64 source
+                                                    <img
+                                                        key={photo.id}
+                                                        src={photo.url} // This will be the Base64 string
+                                                        alt={photo.alt || 'Plant photo'}
+                                                        className="w-full h-32 object-cover rounded-md shadow-sm"
+                                                    />
                                                 ))}
                                             </div>
                                         )}

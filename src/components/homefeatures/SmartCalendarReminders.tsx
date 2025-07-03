@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { CalendarDays, CheckCircle2, Clock } from 'lucide-react';
@@ -20,21 +20,23 @@ export default function SmartCalendarReminders() {
   const router = useRouter();
   const taskService = TaskService.getInstance();
 
-  const loadTodayTasks = useCallback(() => {
+  useEffect(() => {
+    loadTodayTasks();
+  }, []);
+
+  const loadTodayTasks = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
+
     const tasks = taskService.getTasks({
       startDate: today.toISOString(),
       endDate: tomorrow.toISOString(),
     });
-    setTodayTasks(tasks);
-  }, [taskService]);
 
-  useEffect(() => {
-    loadTodayTasks();
-  }, [loadTodayTasks]);
+    setTodayTasks(tasks);
+  };
 
   const handleTaskComplete = (taskId: string) => {
     taskService.updateTaskStatus(taskId, 'completed');
@@ -102,7 +104,7 @@ export default function SmartCalendarReminders() {
           onClick={() => router.push('/calendar?tab=today')}
         >
           <Clock className="h-4 w-4 mr-2" />
-          Today&apos;s Tasks
+          Today's Tasks
         </Button>
         <Button
           className="flex-1"

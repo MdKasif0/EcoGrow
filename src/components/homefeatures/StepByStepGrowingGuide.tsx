@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -46,7 +45,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
         setGuide(guideData);
         const progressData = growingGuideService.getProgress(selectedPlant.id);
         setProgress(progressData);
-        setExpandedStage(guideData.stages.find(s => s.id === progressData.currentStage)?.id || null);
+        setExpandedStage(progressData.currentStage);
       }
     }
   }, [selectedPlant]);
@@ -73,9 +72,8 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
 
   const handleSaveNote = () => {
     if (!currentNote.trim()) return;
-    if (!selectedPlant) return;
 
-    const updatedProgress = growingGuideService.addStageNote(selectedPlant.id, currentStageId, currentNote);
+    const updatedProgress = growingGuideService.addStageNote(selectedPlant, currentStageId, currentNote);
     setProgress(updatedProgress);
     setNoteDialogOpen(false);
 
@@ -97,8 +95,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
         // Create a FormData object to send the file
         const formData = new FormData();
         formData.append('photo', file);
-        if (!selectedPlant) return;
-        formData.append('plantId', selectedPlant.id);
+        formData.append('plantId', selectedPlant);
         formData.append('stageId', stageId);
 
         // Here you would typically send this to your backend
@@ -106,8 +103,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
         const imageUrl = URL.createObjectURL(file);
 
         // Update the progress with the new photo
-        if (!selectedPlant) return;
-        const updatedProgress = growingGuideService.addStagePhoto(selectedPlant.id, stageId, imageUrl);
+        const updatedProgress = growingGuideService.addStagePhoto(selectedPlant, stageId, imageUrl);
         setProgress(updatedProgress);
 
         toast({
@@ -153,8 +149,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
         <ScrollArea className="h-[400px] pr-4">
           <div className="space-y-4">
             {guide.stages.map((stage) => {
-              const stageProgress = progress.stages.find(ps => ps.stageId === stage.id);
-              if (!stageProgress) return null;
+              const stageProgress = progress.stages[stage.id];
               const isExpanded = expandedStage === stage.id;
 
               return (
@@ -204,25 +199,25 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
 
                             <TabsContent value="instructions" className="space-y-4">
                               <ul className="list-disc list-inside space-y-2">
-                                {(stage.instructions || []).map((instruction, index) => (
+                                {stage.instructions.map((instruction, index) => (
                                   <li key={index}>{instruction}</li>
                                 ))}
                               </ul>
-                              {(stage.tips || []).length > 0 && (
+                              {stage.tips.length > 0 && (
                                 <div>
                                   <h4 className="font-semibold mb-2">Tips</h4>
                                   <ul className="list-disc list-inside space-y-1">
-                                    {(stage.tips || []).map((tip, index) => (
+                                    {stage.tips.map((tip, index) => (
                                       <li key={index}>{tip}</li>
                                     ))}
                                   </ul>
                                 </div>
                               )}
-                              {(stage.warnings || []).length > 0 && (
+                              {stage.warnings.length > 0 && (
                                 <div>
                                   <h4 className="font-semibold mb-2">Warnings</h4>
                                   <ul className="list-disc list-inside space-y-1 text-destructive">
-                                    {(stage.warnings || []).map((warning, index) => (
+                                    {stage.warnings.map((warning, index) => (
                                       <li key={index}>{warning}</li>
                                     ))}
                                   </ul>
@@ -232,7 +227,7 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
 
                             <TabsContent value="tools" className="space-y-4">
                               <ul className="list-disc list-inside space-y-2">
-                                {(stage.toolsNeeded || []).map((tool, index) => (
+                                {stage.toolsNeeded.map((tool, index) => (
                                   <li key={index}>{tool}</li>
                                 ))}
                               </ul>
@@ -240,14 +235,13 @@ export function StepByStepGrowingGuide({ selectedPlant, onPlantSelect }: StepByS
 
                             <TabsContent value="media" className="space-y-4">
                               <div className="grid grid-cols-2 gap-4">
-                                {(stage.media || []).map((item, index) => (
-                                  <div key={index} className="aspect-video bg-muted rounded-lg overflow-hidden relative">
+                                {stage.media.map((item, index) => (
+                                  <div key={index} className="aspect-video bg-muted rounded-lg overflow-hidden">
                                     {item.type === 'image' ? (
-                                      <Image
+                                      <img
                                         src={item.url}
-                                        alt={item.alt || ''}
-                                        layout="fill"
-                                        objectFit="cover"
+                                        alt={item.alt}
+                                        className="w-full h-full object-cover"
                                       />
                                     ) : (
                                       <video

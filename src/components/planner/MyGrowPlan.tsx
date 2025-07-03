@@ -56,7 +56,7 @@ const MyGrowPlan: React.FC<MyGrowPlanProps> = ({ savedPlants }) => {
                     </div>
                     <div className="flex items-center">
                       <Droplet className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{plant.waterNeeds.frequency} ({plant.waterNeeds.description})</span>
+                      <span className="text-sm">{plant.waterNeeds}</span>
                     </div>
                   </div>
                 </div>

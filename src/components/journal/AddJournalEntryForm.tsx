@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import Image from 'next/image';
 import { PlantJournalEntry, Mood, HealthStatus, JournalPhoto, TaskSummary, GrowingGuide, GrowthStage, WeatherInfo } from '@/types/plant-journal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -226,15 +225,12 @@ export function AddJournalEntryForm({
           </Label>
           <div className="flex flex-wrap gap-3 mt-2">
             {photos.map((photo, index) => (
-              <div key={index} className="group relative">
-                <div className="relative w-24 h-24 rounded-md shadow-sm overflow-hidden">
-                  <Image
-                      src={URL.createObjectURL(photo)}
-                      alt={`Photo preview ${index + 1}`}
-                      layout="fill"
-                      objectFit="cover"
-                  />
-                </div>
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(photo)}
+                  alt={`Photo preview ${index + 1}`}
+                  className="w-24 h-24 object-cover rounded-md shadow-sm"
+                />
                 <Button
                   type="button"
                   variant="ghost"

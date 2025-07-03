@@ -80,7 +80,7 @@ export default function HomePage() {
           animate="visible"
         >
           <motion.div variants={itemVariants}><MyPlantsOverview /></motion.div>
-          <motion.div variants={itemVariants}><PersonalizedGrowPlanner /></motion.div>
+          <motion.div variants={itemVariants}><PersonalizedGrowPlanner onPlantSelect={setSelectedPlant} /></motion.div>
           <motion.div variants={itemVariants}><PlantGrowthTracker /></motion.div>
           <motion.div variants={itemVariants}><PlantHealthScanner /></motion.div>
           <motion.div variants={itemVariants}><SmartCalendarReminders /></motion.div>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -32,14 +32,14 @@ export default function GrowCalendar() {
   const { toast } = useToast();
   const taskService = TaskService.getInstance();
 
-  const loadTasks = useCallback(() => {
-    const allTasks = taskService.getTasks();
-    setTasks(allTasks);
-  }, [taskService]);
-
   useEffect(() => {
     loadTasks();
-  }, [loadTasks]);
+  }, []);
+
+  const loadTasks = () => {
+    const allTasks = taskService.getTasks();
+    setTasks(allTasks);
+  };
 
   const handleEventClick = (info: any) => {
     const task = tasks.find(t => t.id === info.event.id);

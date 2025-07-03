@@ -38,8 +38,8 @@ describe('ExperienceLevelStep', () => {
     render(<ExperienceLevelStep onNext={mockOnNext} onBack={mockOnBack} data={{}} />);
     // The text 'Advanced' is part of a button
     const advancedButton = screen.getByText('Advanced').closest('button');
-    expect(advancedButton).toBeInTheDocument(); // Ensures not null
-    if (advancedButton) fireEvent.click(advancedButton);
+    expect(advancedButton).toBeInTheDocument();
+    fireEvent.click(advancedButton);
 
     expect(screen.getByRole('button', { name: /Finish/i })).not.toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: /Finish/i }));

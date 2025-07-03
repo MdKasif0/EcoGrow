@@ -77,8 +77,8 @@ interface PersonalizedGrowPlannerProps {
 
 const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [plannerData, setPlannerData] = useState<Partial<PlannerData>>(getPlannerData() || {});
+  const [currentStep, setCurrentStep] = useState(1);
+  const [plannerData, setPlannerData] = useState<PlannerData | null>(null);
   const [savedPlants, setSavedPlants] = useState<PlantRecommendation[]>([]);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [growPlans, setGrowPlans] = useState<GrowPlan[]>([]);
@@ -126,13 +126,25 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
     }
   }, []); // Empty dependency array ensures this runs only on mount
 
-  // useEffect for saving data (now removed as saving is handled in handleNextStep)
-  // useEffect(() => {
-  //   if (currentStep > 0 && currentStep <= TOTAL_PLANNER_STEPS && plannerData && Object.keys(plannerData).length > 0) {
-  // console.log("Intermediate save of planner data:", plannerData);
-  // savePlannerData(plannerData as PlannerData); // CAUTION with partial data
-  //   }
-  // }, [plannerData, currentStep]);
+  useEffect(() => {
+    if (currentStep === TOTAL_PLANNER_STEPS && Object.keys(plannerData).length > 0) {
+      // Ensure all expected fields are present before trying to save.
+      // This is a basic check; individual step data should already be structured correctly.
+      const plannerToSave: Partial<PlannerData> = {
+        ...plannerData, // Spread the collected form data
+        userId: "defaultUser123", // Placeholder userId
+        createdAt: new Date().toISOString(),
+      };
+
+      // Log the data being saved for debugging
+      console.log("Attempting to save planner data:", plannerToSave);
+
+      // Type assertion is used here assuming plannerData has been correctly populated by the steps
+      // and matches the structure of PlannerData fields.
+      // The isValidPlannerData function within savePlannerData will perform the final validation.
+      savePlannerData(plannerToSave as PlannerData);
+    }
+  }, [currentStep, plannerData]); // Trigger when currentStep or plannerData changes
 
   // Load saved plans on mount
   useEffect(() => {
@@ -154,39 +166,11 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
           });
         });
     }
-  }, [plannerData?.location, toast]);
+  }, [plannerData?.location]);
 
-  const handleNextStep = (stepData: any) => {
-    const newPlannerData = { ...plannerData, ...stepData };
-    setPlannerData(newPlannerData);
-    const nextStep = currentStep + 1;
-    setCurrentStep(nextStep);
-
-    if (nextStep === TOTAL_PLANNER_STEPS + 1) { // Transitioning to results view after last data step
-      // Ensure all required fields for PlannerData are present before casting
-      // This is a simplified check; more robust validation might be needed.
-      if (newPlannerData.location && newPlannerData.space && newPlannerData.sunlight && newPlannerData.experience && newPlannerData.timeCommitment && newPlannerData.purpose) {
-        savePlannerData({
-          ...newPlannerData,
-          userId: newPlannerData.userId || "defaultUser123", // Ensure userId
-          createdAt: newPlannerData.createdAt || new Date().toISOString(), // Ensure createdAt
-        } as PlannerData);
-      } else {
-        console.warn("Attempted to save incomplete planner data at final step.", newPlannerData);
-        // Optionally, show a toast message to the user
-        toast({
-          title: "Incomplete Data",
-          description: "Some planner information is missing. Please review previous steps.",
-          variant: "destructive",
-        });
-        setCurrentStep(TOTAL_PLANNER_STEPS); // Stay on the last step
-        return;
-      }
-    }
-  };
-
-  const handlePreviousStep = () => {
-    setCurrentStep(prev => Math.max(0, prev - 1)); // Prevent going below 0
+  const handlePlannerComplete = () => {
+    setPlannerData(mockPlannerData);
+    setCurrentStep(2);
   };
 
   const handleAddToGrowPlan = (plant: PlantRecommendation) => {
@@ -309,56 +293,23 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
   };
 
   const renderStep = () => {
-    // Animation logic for displayedStep can remain if still desired
-    // For simplicity in this instruction, directly use currentStep for switch
-    const LAST_DATA_COLLECTION_STEP = TOTAL_PLANNER_STEPS;
-
     switch (currentStep) {
-      case 0: // Intro screen
+      case 1:
         return (
-          <div className="space-y-6 text-center">
-            <h2 className="text-3xl font-bold font-serif text-gray-800 dark:text-white">Welcome to Your Personalized Grow Planner!</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-              Answer a few simple questions about your gardening space and preferences,
-              and we&apos;ll help you find the perfect plants to grow.
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Personalized Grow Planner</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Answer a few questions to get personalized plant recommendations based on your growing conditions and preferences.
             </p>
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Button
-                size="lg"
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105"
-                onClick={() => {
-                  // Optionally clear old data or merge. For now, just proceed.
-                  // setPlannerData(getPlannerData() || {}); // Load existing or start fresh
-                  setCurrentStep(1);
-                }}
-              >
-                Let&apos;s Get Started!
+            <div className="flex items-center gap-4">
+              <Button onClick={handlePlannerComplete}>
+                Get Recommendations
               </Button>
-            </motion.div>
-            { (getPlannerData() && Object.keys(getPlannerData() || {}).length > 0) &&
-              <Button variant="link" onClick={() => { setPlannerData(getPlannerData() || {}); setCurrentStep(LAST_DATA_COLLECTION_STEP + 1); }}>
-                Resume previous session or View Recommendations
-              </Button>
-            }
+              <VoiceInput onTranscript={handleVoiceInput} />
+            </div>
           </div>
         );
-      case 1:
-        return <LocationStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
       case 2:
-        return <GrowingSpaceStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
-      case 3:
-        return <SunlightExposureStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
-      case 4:
-        return <PurposeStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
-      case 5:
-        return <TimeCommitmentStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
-      case TOTAL_PLANNER_STEPS: // This is step 6, the last data collection step
-        return <ExperienceLevelStep data={plannerData} onNext={handleNextStep} onBack={handlePreviousStep} />;
-      case TOTAL_PLANNER_STEPS + 1: // This is step 7, the results view
         return (
           <div className="space-y-6">
             <Tabs defaultValue="recommendations" className="space-y-4">
@@ -367,8 +318,8 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
                 <TabsTrigger value="grow-plan">My Grow Plan</TabsTrigger>
                 <TabsTrigger value="saved-plans">Saved Plans</TabsTrigger>
               </TabsList>
+
               <TabsContent value="recommendations">
-                {/* Weather data display can remain */}
                 {weatherData && (
                   <Card className="p-4 mb-4">
                     <h3 className="font-semibold mb-2">Current Weather</h3>
@@ -378,45 +329,45 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
                   </Card>
                 )}
                 <PlantRecommendations
-                  plannerData={plannerData as PlannerData} // Should be complete now
+                  plannerData={plannerData}
                   onAddToGrowPlan={handleAddToGrowPlan}
                 />
               </TabsContent>
+
               <TabsContent value="grow-plan">
-                {/* MyGrowPlan and save plan form can remain */}
                 <MyGrowPlan savedPlants={savedPlants} />
                 {savedPlants.length > 0 && (
-                   <div className="mt-4 space-y-4">
-                   <Input
-                     placeholder="Plan Name"
-                     value={planName}
-                     onChange={(e) => setPlanName(e.target.value)}
-                   />
-                   <Textarea
-                     placeholder="Plan Description"
-                     value={planDescription}
-                     onChange={(e) => setPlanDescription(e.target.value)}
-                   />
-                   <Textarea
-                     placeholder="Notes"
-                     value={planNotes}
-                     onChange={(e) => setPlanNotes(e.target.value)}
-                   />
-                   <div className="flex items-center gap-2">
-                     <input
-                       type="checkbox"
-                       id="isPublic"
-                       checked={isPublic}
-                       onChange={(e) => setIsPublic(e.target.checked)}
-                     />
-                     <label htmlFor="isPublic">Make this plan public</label>
-                   </div>
-                   <Button onClick={handleSavePlan}>Save Plan</Button>
-                 </div>
+                  <div className="mt-4 space-y-4">
+                    <Input
+                      placeholder="Plan Name"
+                      value={planName}
+                      onChange={(e) => setPlanName(e.target.value)}
+                    />
+                    <Textarea
+                      placeholder="Plan Description"
+                      value={planDescription}
+                      onChange={(e) => setPlanDescription(e.target.value)}
+                    />
+                    <Textarea
+                      placeholder="Notes"
+                      value={planNotes}
+                      onChange={(e) => setPlanNotes(e.target.value)}
+                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="isPublic"
+                        checked={isPublic}
+                        onChange={(e) => setIsPublic(e.target.checked)}
+                      />
+                      <label htmlFor="isPublic">Make this plan public</label>
+                    </div>
+                    <Button onClick={handleSavePlan}>Save Plan</Button>
+                  </div>
                 )}
               </TabsContent>
+
               <TabsContent value="saved-plans">
-                {/* Display saved plans logic can remain */}
                 <div className="space-y-4">
                   {growPlans.map(plan => (
                     <Card key={plan.id} className="p-4">
@@ -464,16 +415,19 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
                 </div>
               </TabsContent>
             </Tabs>
+
             <div className="flex justify-between">
-              <Button variant="outline" onClick={() => { clearPlannerData(); setPlannerData({}); setCurrentStep(0); }}>
+              <Button variant="outline" onClick={() => setCurrentStep(1)}>
                 Start Over
               </Button>
-              {/* Optional: Add other buttons like "Browse All Plants" */}
+              <Button variant="outline">
+                Browse All Plants
+              </Button>
             </div>
           </div>
         );
       default:
-        return <div>Error: Unknown step. <Button onClick={() => setCurrentStep(0)}>Reset</Button></div>;
+        return null;
     }
   };
 
@@ -484,12 +438,7 @@ const PersonalizedGrowPlanner: React.FC<PersonalizedGrowPlannerProps> = () => {
       transition={{ duration: 0.5 }}
     >
       <Card className="p-6">
-        {currentStep > 0 && currentStep <= TOTAL_PLANNER_STEPS && (
-          <ProgressBar currentStep={currentStep -1} totalSteps={TOTAL_PLANNER_STEPS} />
-        )}
-        <div className={animationClass}>
-         {renderStep()}
-        </div>
+        {renderStep()}
       </Card>
     </motion.div>
   );

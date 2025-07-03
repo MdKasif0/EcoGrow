@@ -2,13 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { PlannerData } from '@/types/planner';
 
 // Initialize the Gemini API
-const apiKey = process.env.GOOGLE_API_KEY; // Prefer server-side key
-if (!apiKey && process.env.NODE_ENV !== 'production') {
-  console.warn("WARNING: GOOGLE_API_KEY is not set. Plant recommender's direct AI calls would fail; using mock data if implemented, or client-side features relying on this genAI instance directly will be broken.");
-}
-// Initialize genAI. If plantRecommender functions using this are called client-side, this is an issue.
-// For server-side usage (e.g. via server actions), this is fine.
-const genAI = new GoogleGenerativeAI(apiKey || '');
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
 export interface PlantRecommendation {
   id: string;
@@ -36,8 +30,6 @@ export interface PlantRecommendation {
     tasks: string[];
   }[];
   tags: string[];
-  imageUrl?: string; // Added
-  confidence?: number; // Added
 }
 
 // Cleaned up and verified mock plant database
@@ -141,7 +133,7 @@ const getSeason = (hemisphere: 'northern' | 'southern'): string => {
 // Function to get AI-powered plant recommendations
 const getAIRecommendations = async (plannerData: PlannerData): Promise<PlantRecommendation[]> => {
   // Check if API key is configured
-  if (!apiKey) {
+  if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
     console.warn('Gemini API key not configured. Using mock data instead.');
     return mockPlantDatabase;
   }

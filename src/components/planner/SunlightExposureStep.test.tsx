@@ -14,10 +14,10 @@ jest.mock('lucide-react', () => ({
 // Mock TooltipProvider as it might wrap the component or cause issues if not handled
 jest.mock('@/components/ui/tooltip', () => ({
   ...jest.requireActual('@/components/ui/tooltip'), // Keep other exports
-  TooltipProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  TooltipTrigger: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) => asChild ? children : <button>{children}</button>,
-  TooltipContent: ({ children }: { children: React.ReactNode }) => <div data-testid="tooltip-content" style={{display: 'none'}}>{children}</div>, // Hidden by default
+  TooltipProvider: ({ children }) => <>{children}</>, // Simple passthrough
+  Tooltip: ({ children }) => <>{children}</>, // Passthrough
+  TooltipTrigger: ({ children, asChild }) => asChild ? children : <button>{children}</button>, // Basic trigger
+  TooltipContent: ({ children }) => <div data-testid="tooltip-content" style={{display: 'none'}}>{children}</div>, // Hidden by default
 }));
 
 
@@ -49,7 +49,7 @@ describe('SunlightExposureStep', () => {
     // The text 'Full Sun' is part of a button
     const fullSunButton = screen.getByText('Full Sun').closest('button');
     expect(fullSunButton).toBeInTheDocument();
-    if (fullSunButton) fireEvent.click(fullSunButton);
+    fireEvent.click(fullSunButton);
 
     expect(screen.getByRole('button', { name: /Next/i })).not.toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: /Next/i }));
@@ -80,6 +80,6 @@ describe('SunlightExposureStep', () => {
     const lowLightDetailedGuide = "Ideal for shade-tolerant plants like leafy greens (e.g., lettuce, spinach) or many indoor houseplants.";
     // All TooltipContent components are rendered, so we find all and check if any contain the text.
     const allTooltipContents = screen.getAllByTestId('tooltip-content');
-    expect(allTooltipContents.some(node => node.textContent?.includes(lowLightDetailedGuide))).toBe(true);
+    expect(allTooltipContents.some(node => node.textContent.includes(lowLightDetailedGuide))).toBe(true);
   });
 });

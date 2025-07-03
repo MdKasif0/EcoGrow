@@ -13,16 +13,9 @@ const VoiceInput: React.FC<VoiceInputProps> = ({ onTranscript, onError, classNam
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') { // Simplified check
-      const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const recognition = SpeechRecognitionAPI ? new SpeechRecognitionAPI() : null;
-
-      if (!recognition) {
-        onError?.('Speech recognition API is not available in this browser.');
-        setRecognition(null); // Ensure state is null if API is not available
-        return;
-      }
-
+    if (typeof window !== 'undefined' && 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
@@ -44,35 +37,27 @@ const VoiceInput: React.FC<VoiceInputProps> = ({ onTranscript, onError, classNam
       };
 
       setRecognition(recognition);
-      // No explicit else here, as the early return handles non-availability
+    } else {
+      onError?.('Speech recognition is not supported in your browser');
     }
 
     return () => {
-      if (recognition) { // recognition here is from the outer scope of useEffect, which is fine.
+      if (recognition) {
         recognition.stop();
       }
     };
-  }, [onTranscript, onError, recognition]);
+  }, [onTranscript, onError]);
 
   const toggleListening = () => {
-    if (!recognition) return; // recognition here refers to the state variable
+    if (!recognition) return;
 
     if (isListening) {
       recognition.stop();
-      // setIsListening(false); // onend will handle this
     } else {
-      try {
-        recognition.start();
-        setIsListening(true);
-      } catch (e) {
-        console.error("Error starting recognition:", e);
-        onError?.("Failed to start voice input.");
-      }
+      recognition.start();
+      setIsListening(true);
     }
   };
-
-  // Determine if API is available for disabling button more accurately
-  const isApiAvailable = typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
   return (
     <Button
@@ -80,7 +65,7 @@ const VoiceInput: React.FC<VoiceInputProps> = ({ onTranscript, onError, classNam
       size="icon"
       onClick={toggleListening}
       className={className}
-      disabled={!recognition || !isApiAvailable} // Check both state and API availability
+      disabled={!recognition}
     >
       {isListening ? (
         <MicOff className="h-4 w-4 text-red-500" />

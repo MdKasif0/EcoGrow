@@ -31,7 +31,7 @@ export class PlantTimelineService {
     // In a real app, you'd determine the growing guide based on plant variety.
     // For now, we'll assume the journal might link to a guide or we'll use a default/mock guide.
     // Let's try to find a guide based on the plant ID, assuming plantId might match a guideId pattern
-    const growingGuideId = (journal as any).growing_guide_id || Object.keys(growingGuides).find(id => id.startsWith(journal.plant_id.replace('plant-', '')));
+    const growingGuideId = journal.growing_guide_id || Object.keys(growingGuides).find(id => id.startsWith(journal.plant_id.replace('plant-', '')));
 
     if (!growingGuideId || !growingGuides[growingGuideId]) {
       console.warn(`Cannot generate timeline: Growing guide not found for plant ID ${journal.plant_id} or guide ID ${growingGuideId}.`);
@@ -78,7 +78,7 @@ export class PlantTimelineService {
       planting_date: journal.planting_date,
       growing_guide_id: growingGuideId,
       stages: timelineStages,
-      projected_harvest_date: projectedHarvestDate ? format(projectedHarvestDate, 'yyyy-MM-dd') : undefined,
+      projected_harvest_date: format(projectedHarvestDate, 'yyyy-MM-dd'),
       last_updated: new Date().toISOString(),
     };
   }
