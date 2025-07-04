@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import { getProduceByCommonName } from '@/lib/produceData';
 import ItemDetailsPage from './item-details-page'; // Corrected client component import
@@ -53,7 +52,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function ItemPageWrapper({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: { slug: string }
+}
+
+export default function ItemPageWrapper({ params }: PageProps) {
   const produce = getProduceByCommonName(decodeURIComponent(params.slug));
   if (!produce) {
     notFound();
