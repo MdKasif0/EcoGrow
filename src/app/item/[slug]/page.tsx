@@ -52,11 +52,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-interface PageProps {
-  params: { slug: string }
-}
-
-export default function ItemPageWrapper({ params }: PageProps) {
+export default function ItemPageWrapper({ params }: { params: { slug: string } }) {
   const produce = getProduceByCommonName(decodeURIComponent(params.slug));
   if (!produce) {
     notFound();
